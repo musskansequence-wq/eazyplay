@@ -1986,7 +1986,7 @@
       <div class="city-menu" id="cityMenu" hidden>
         <div id="cityStep2" hidden>
           <div class="area-head"><button type="button" class="area-back" id="areaBack"><svg class="icon" width="14" height="14" aria-hidden="true"><use href="#ic-chevron"/></svg>Change city</button><b id="areaTitle">Areas</b></div>
-          <p id="areaSub">Pick an area to see the play areas there.</p>
+          <p id="areaSub">Pick an area to see the venues there.</p>
           <input type="search" class="area-search" id="areaSearch" placeholder="Search a sector or area" aria-label="Search areas">
           <div class="area-list" id="areaList"></div>
         </div>
@@ -5112,33 +5112,34 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       showToast((c === 'all' ? 'Delhi-NCR' : c) + ': ' + (nv ? nv.toLocaleString('en-IN') + ' venue' + (nv === 1 ? '' : 's') + ' to explore' : 'venues coming soon')); }
   }
 
-  /* step 2 of the menu: the areas inside a city, ranked by how many play areas they have */
+  /* step 2 of the menu: the areas inside a city, ranked by how many venues (play areas, party venues, activities) they have */
   var cityStep1 = document.getElementById('cityStep1'), cityStep2 = document.getElementById('cityStep2');
   var areaSearch = document.getElementById('areaSearch'), areaListEl = document.getElementById('areaList');
   function cityAreas(c){
     var rows = REAL.rows.filter(function(r){ return r.city === c && r.area; });
-    var src = rows.length ? rows.map(function(r){ return {area:r.area, name:r.name, play:r.kind === 'play'}; })
-      : PLAYAREAS.concat(PARTIES).filter(function(it){ return it.city === c && it.area; }).map(function(it){ return {area:it.area, name:it.name, play:PLAYAREAS.indexOf(it) !== -1}; });
+    var src = rows.length ? rows.map(function(r){ return {area:r.area, name:r.name, play:r.kind === 'play', venue:r.kind === 'play' || r.kind === 'party' || r.kind === 'activity'}; })
+      : PLAYAREAS.concat(PARTIES).filter(function(it){ return it.city === c && it.area; }).map(function(it){ return {area:it.area, name:it.name, play:PLAYAREAS.indexOf(it) !== -1, venue:true}; });
     var by = {};
     src.forEach(function(s){
-      var a = by[s.area] || (by[s.area] = {area:s.area, play:0, total:0, names:[]});
+      var a = by[s.area] || (by[s.area] = {area:s.area, play:0, venues:0, total:0, names:[]});
       a.total++;
-      if(s.play){ a.play++; if(a.names.length < 2) a.names.push(s.name); }
+      if(s.play) a.play++;
+      if(s.venue){ a.venues++; if(a.names.length < 2 && a.names.indexOf(s.name) === -1) a.names.push(s.name); }
     });
     return Object.keys(by).map(function(k){ return by[k]; })
-      .sort(function(a, b){ return (b.play - a.play) || (b.total - a.total) || a.area.localeCompare(b.area, 'en', {numeric:true}); });
+      .sort(function(a, b){ return (b.venues - a.venues) || (b.play - a.play) || a.area.localeCompare(b.area, 'en', {numeric:true}); });
   }
   function renderAreaList(){
     var c = currentCity, q = areaSearch.value.trim().toLowerCase();
-    var all = cityAreas(c).filter(function(a){ return a.play > 0; });
+    var all = cityAreas(c).filter(function(a){ return a.venues > 0; });
     var list = all.filter(function(a){ return !q || a.area.toLowerCase().indexOf(q) !== -1 || a.names.join(' ').toLowerCase().indexOf(q) !== -1; });
-    var playTotal = all.reduce(function(n, a){ return n + a.play; }, 0);
-    var html = q ? '' : '<button type="button" class="area-opt' + (currentArea === 'all' ? ' active' : '') + '" data-area="all"><span class="area-txt"><b>All of ' + kzEsc(c) + '</b><small>Every area in ' + kzEsc(c) + '</small></span><span class="area-n">' + playTotal + '</span></button>';
+    var venueTotal = REAL.rows.filter(function(r){ return r.city === c && (r.kind === 'play' || r.kind === 'party' || r.kind === 'activity'); }).length || all.reduce(function(n, a){ return n + a.venues; }, 0);
+    var html = q ? '' : '<button type="button" class="area-opt' + (currentArea === 'all' ? ' active' : '') + '" data-area="all"><span class="area-txt"><b>All of ' + kzEsc(c) + '</b><small>Every area in ' + kzEsc(c) + '</small></span><span class="area-n" title="Venues">' + venueTotal + '</span></button>';
     html += list.map(function(a){
-      var sub = a.play + ' play area' + (a.play === 1 ? '' : 's') + ': ' + a.names.join(', ') + (a.play > a.names.length ? '\u2026' : '');
-      return '<button type="button" class="area-opt' + (currentArea === a.area ? ' active' : '') + '" data-area="' + kzEsc(a.area) + '"><span class="area-txt"><b>' + kzEsc(a.area) + '</b><small>' + kzEsc(sub) + '</small></span><span class="area-n" title="Play areas">' + a.play + '</span></button>';
+      var sub = a.venues + ' venue' + (a.venues === 1 ? '' : 's') + ': ' + a.names.join(', ') + (a.venues > a.names.length ? '\u2026' : '');
+      return '<button type="button" class="area-opt' + (currentArea === a.area ? ' active' : '') + '" data-area="' + kzEsc(a.area) + '"><span class="area-txt"><b>' + kzEsc(a.area) + '</b><small>' + kzEsc(sub) + '</small></span><span class="area-n" title="Venues">' + a.venues + '</span></button>';
     }).join('');
-    if(!list.length) html += '<div class="area-empty">' + (all.length ? 'No area matches \u201c' + kzEsc(areaSearch.value.trim()) + '\u201d.' : 'We don\u2019t have play areas listed in ' + kzEsc(c) + ' yet.') + '</div>';
+    if(!list.length) html += '<div class="area-empty">' + (all.length ? 'No area matches \u201c' + kzEsc(areaSearch.value.trim()) + '\u201d.' : 'We don\u2019t have venues listed in ' + kzEsc(c) + ' yet.') + '</div>';
     areaListEl.innerHTML = html;
   }
   function showCityStep(step){
