@@ -467,7 +467,7 @@
     .nav-search{ order:5; flex-basis:100%; }
     .nav{ padding-bottom:10px; }
     .mobile-panel{ top:122px; }
-    .city-menu{ width:min(330px, calc(100vw - 32px)); }
+    .city-menu{ width:min(330px, calc(100vw - 32px)); left:auto; right:0; }
     .hero{ padding-top:150px; }
   }
   /* hero photo slideshow */
@@ -5157,10 +5157,13 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   // (measures the wrap and offsetWidth, not the menu's rect, because the open animation scales it)
   function fitCityMenu(){
     if(cityMenu.hidden) return;
-    var wl = cityMenu.parentNode.getBoundingClientRect().left, vw = document.documentElement.clientWidth;
-    var shift = Math.max(0, wl + cityMenu.offsetWidth - (vw - 16));
-    shift = Math.min(shift, Math.max(0, wl - 16));
-    cityMenu.style.left = shift ? (-shift) + 'px' : '';
+    cityMenu.style.left = '';
+    var base = cityMenu.parentNode.getBoundingClientRect().left + cityMenu.offsetLeft;
+    var vw = document.documentElement.clientWidth, w = cityMenu.offsetWidth;
+    var shift = 0;
+    if(base + w > vw - 16) shift = (vw - 16) - (base + w);
+    if(base + shift < 16) shift = 16 - base;
+    if(shift) cityMenu.style.left = (cityMenu.offsetLeft + shift) + 'px';
   }
   window.addEventListener('resize', function(){ if(!cityMenu.hidden) fitCityMenu(); });
   cityPickBtn.addEventListener('click', function(e){ e.stopPropagation(); toggleCityMenu(cityMenu.hidden); });
