@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Published from GitHub: github.com/musskansequence-wq/eazyplay (deploy check 2026-10-23) -->
+<!-- Published from GitHub: github.com/musskansequence-wq/eazyplay -->
 <html lang="en" class="no-ps">
 <head>
 <meta charset="UTF-8">
@@ -5145,12 +5145,24 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       areaSearch.value = '';
       renderAreaList();
     }
+    fitCityMenu();
   }
   function toggleCityMenu(open){
     if(open) showCityStep(currentCity !== 'all' ? 2 : 1);
     cityMenu.hidden = !open;
     cityPickBtn.setAttribute('aria-expanded', String(open));
+    if(open) fitCityMenu();
   }
+  // on phones the picker sits at the right of the header, so shift the menu left until it fits on screen (16px gutter)
+  // (measures the wrap and offsetWidth, not the menu's rect, because the open animation scales it)
+  function fitCityMenu(){
+    if(cityMenu.hidden) return;
+    var wl = cityMenu.parentNode.getBoundingClientRect().left, vw = document.documentElement.clientWidth;
+    var shift = Math.max(0, wl + cityMenu.offsetWidth - (vw - 16));
+    shift = Math.min(shift, Math.max(0, wl - 16));
+    cityMenu.style.left = shift ? (-shift) + 'px' : '';
+  }
+  window.addEventListener('resize', function(){ if(!cityMenu.hidden) fitCityMenu(); });
   cityPickBtn.addEventListener('click', function(e){ e.stopPropagation(); toggleCityMenu(cityMenu.hidden); });
   areaSearch.addEventListener('input', renderAreaList);
   cityMenu.addEventListener('click', function(e){
