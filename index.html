@@ -914,6 +914,7 @@
   .cpn-open-panel p{ margin:0 0 14px; color:var(--ink-soft); }
   .cpn-open-form, .bk-coupon-row{ display:flex; gap:8px; }
   .cpn-open-form input, .bk-coupon-row input{ flex:1; text-transform:uppercase; letter-spacing:.05em; }
+  .modal-panel .cpn-open-form .btn, .modal-panel .bk-coupon-row .btn{ width:auto; flex:none; margin-top:0; }
   .bk-coupon[hidden]{ display:none; }
   .bk-coupon-msg{ margin:6px 0 0; font-size:.82rem; font-weight:700; min-height:1em; }
   .bk-coupon-msg.ok{ color:#17663a; }
@@ -1732,7 +1733,9 @@
   .near-head{ font-size:.8rem; letter-spacing:.02em; text-transform:none; font-weight:600; color:var(--ink-soft); }
   .real-more .btn, .ex-more-row .btn{ background:#ffffff; color:var(--ink); border:1px solid var(--border); border-radius:12px; padding:11px 26px; font-weight:600; box-shadow:none; }
   .real-more .btn:hover, .ex-more-row .btn:hover{ border-color:var(--ink-faint); transform:none; }
-  @media (max-width:600px){ .grid, .ex-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:22px 14px; } .xcard-art, .ex-photo{ aspect-ratio:1/1; } }
+  @media (max-width:600px){ .grid, .ex-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:22px 14px; } .xcard-art, .ex-photo{ aspect-ratio:1/1; }
+    /* two cards per row: the photo tag moves to the bottom corner so it doesn't sit on the "#5 · Noida" label */
+    .ex-photo .ex-tag{ top:auto; bottom:8px; right:auto; left:8px; } }
 
   /* buttons, modals, footer */
   .btn{ border-radius:12px; }
@@ -3431,6 +3434,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   hamburger.addEventListener('click', function(){
     var open = mobilePanel.classList.toggle('open');
     hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if(open) document.getElementById('kzNudge').hidden = true; // the chat greeting would sit on top of the menu
   });
   mobilePanel.querySelectorAll('a').forEach(function(a){
     a.addEventListener('click', function(){
@@ -4490,7 +4494,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   document.getElementById('kzNudgeClose').addEventListener('click', function(){ kzNudge.hidden = true; try{ sessionStorage.setItem('kz_seen', '1'); }catch(err){} });
   kzNudge.addEventListener('click', function(e){ if(!e.target.closest('button')) kzOpen(); });
   var kzSeen = false; try{ kzSeen = sessionStorage.getItem('kz_seen') === '1'; }catch(err){}
-  if(!kzSeen) setTimeout(function(){ if(kzPanel.hidden){ kzNudge.hidden = false; setTimeout(function(){ kzNudge.hidden = true; }, 9000); } }, 6000);
+  if(!kzSeen) setTimeout(function(){ if(kzPanel.hidden && !document.getElementById('mobilePanel').classList.contains('open')){ kzNudge.hidden = false; setTimeout(function(){ kzNudge.hidden = true; }, 9000); } }, 6000);
   window.addEventListener('scroll', function(){ document.documentElement.classList.toggle('fab-compact', window.scrollY > 600); }, {passive:true});
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && !kzPanel.hidden && !document.querySelector('.modal-overlay.open')) kzClose();
