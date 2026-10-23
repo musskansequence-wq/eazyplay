@@ -1675,6 +1675,49 @@
   .cat-tile-name{ font-family:var(--font-body); font-weight:600; font-size:1rem; }
   .cat-band + .hero{ padding-top:28px; }
   @media (max-width:700px){ .cat-tiles{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; } .cat-tile{ height:152px; } .cat-tile-art svg{ width:150px; } }
+  /* ===== MASCOT BOOKING (coming soon) ===== */
+  #mascots .msc-card{ position:relative; overflow:hidden; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); align-items:center; gap:24px;
+    padding:clamp(26px, 4vw, 48px); border-radius:var(--radius-lg); border:1px solid var(--border);
+    background:linear-gradient(135deg, #F5EAF8 0%, #FFF7DA 52%, #E3FAF9 100%); }
+  .msc-blob{ position:absolute; border-radius:50%; pointer-events:none; }
+  .msc-blob.b1{ width:260px; height:260px; right:-70px; top:-90px; background:var(--lav); opacity:.55; }
+  .msc-blob.b2{ width:170px; height:170px; left:-60px; bottom:-70px; background:var(--teal); opacity:.5; }
+  .msc-blob.b3{ width:90px; height:90px; left:44%; top:-34px; background:var(--coral-2); opacity:.55; }
+  .msc-copy, .msc-art{ position:relative; }
+  .msc-soon{ display:inline-flex; align-items:center; gap:8px; padding:7px 14px 7px 11px; border-radius:999px; background:var(--grape); color:#fff;
+    font-weight:800; font-size:.78rem; letter-spacing:.09em; text-transform:uppercase; box-shadow:0 8px 20px rgba(138,79,160,.28); }
+  .msc-pulse{ width:9px; height:9px; border-radius:50%; background:#FFF3BD; animation:mscPulse 1.8s ease-out infinite; }
+  @keyframes mscPulse{ 0%{ box-shadow:0 0 0 0 rgba(255,243,189,.85); } 100%{ box-shadow:0 0 0 10px rgba(255,243,189,0); } }
+  #mascots h2{ font-size:clamp(1.9rem, 3.6vw, 2.7rem); margin:16px 0 8px; line-height:1.1; }
+  .msc-copy > p{ margin:0; max-width:46ch; color:var(--ink-soft); font-size:1rem; }
+  .msc-points{ list-style:none; padding:0; margin:18px 0 0; display:flex; flex-wrap:wrap; gap:8px; }
+  .msc-points li{ display:inline-flex; align-items:center; gap:7px; padding:7px 12px 7px 8px; border-radius:999px; background:rgba(255,255,255,.8); border:1px solid var(--border); font-size:.86rem; font-weight:600; }
+  .msc-tick{ width:20px; height:20px; border-radius:50%; display:grid; place-items:center; background:var(--mint); color:var(--aqua-deep); font-size:.72rem; font-weight:800; }
+  .msc-foot .btn{ text-decoration:none; }
+  .msc-foot{ display:flex; flex-wrap:wrap; align-items:center; gap:14px 18px; margin-top:26px; }
+  .msc-date{ display:inline-flex; align-items:center; gap:12px; padding:10px 18px 10px 10px; border-radius:18px; background:#fff; box-shadow:var(--shadow-sm); border:1px dashed rgba(138,79,160,.35); }
+  .msc-date-ic{ width:44px; height:44px; border-radius:13px; display:grid; place-items:center; background:var(--yellow); color:var(--peach-deep); }
+  .msc-date small{ display:block; font-size:.72rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); }
+  .msc-date b{ display:block; font-family:var(--font-display); font-size:1.3rem; font-weight:800; line-height:1.2; color:var(--ink); }
+  .msc-art svg{ display:block; width:100%; max-width:360px; height:auto; margin-inline:auto; overflow:visible; }
+  .msc-wave{ transform-box:fill-box; transform-origin:0% 100%; animation:mscWave 1.6s ease-in-out infinite; }
+  @keyframes mscWave{ 0%,100%{ rotate:0deg; } 50%{ rotate:14deg; } }
+  .msc-balloons{ animation:mscFloat 3.4s ease-in-out infinite; }
+  @keyframes mscFloat{ 0%,100%{ translate:0 0; } 50%{ translate:0 -7px; } }
+  .msc-eyes{ transform-box:fill-box; transform-origin:50% 50%; animation:mscBlink 4.5s infinite; }
+  @keyframes mscBlink{ 0%,94%,100%{ scale:1 1; } 97%{ scale:1 .1; } }
+  @media (prefers-reduced-motion: reduce){ .msc-wave, .msc-balloons, .msc-eyes, .msc-pulse{ animation:none; } }
+  @media (max-width:760px){
+    #mascots .msc-card{ grid-template-columns:1fr; gap:6px; }
+    .msc-art{ order:-1; } .msc-art svg{ max-width:230px; }
+    .msc-foot .btn{ width:100%; } .msc-date{ width:100%; }
+  }
+  /* 5th explore tile: mascots (coming soon) */
+  .cat-tiles{ grid-template-columns:repeat(5, minmax(0, 1fr)); }
+  .t-masc{ background:linear-gradient(180deg, #FFFFFF 18%, #FFF0CC 100%); }
+  .cat-soon{ position:absolute; top:10px; right:10px; padding:3px 9px; border-radius:999px; background:var(--grape); color:#fff; font-size:.66rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+  .cat-tile-art svg{ max-width:100%; }
+  @media (max-width:700px){ .cat-tiles{ grid-template-columns:repeat(2, minmax(0, 1fr)); } .cat-tile.t-masc{ grid-column:1 / -1; } }
 
   /* sections */
   .section{ padding:56px 0 8px; }
@@ -2040,6 +2083,7 @@
   <a href="#events">Kidz Events</a>
   <a href="#activities">Activities</a>
   <a href="#returnGifts">Return Gifts</a>
+  <a href="#mascots">Mascots <small>(coming soon)</small></a>
   <a href="#testimonials">Reviews</a>
   <a href="#" id="mobileWishlistLink">Wishlist <span id="mobileWishlistCount"></span></a>
   <a href="#" id="mobileAuthLink">Log In / Sign Up</a>
@@ -2107,7 +2151,20 @@
 <path d="M71.4 36 h17.2 l-.8 6 h-15.6z M70.6 46 h18.8 l-.6 5 h-17.6z" fill="#E5486B"/>
 <circle cx="42" cy="76" r="24" fill="url(#tD2)"/>
 <circle cx="36" cy="66" r="3.4" fill="#1E3A8A"/><circle cx="46" cy="64" r="3.4" fill="#1E3A8A"/><circle cx="41" cy="73" r="3.4" fill="#1E3A8A"/>
-<path d="M28 62 a18 18 0 0 1 10 -7" stroke="#fff" stroke-opacity=".6" stroke-width="3" stroke-linecap="round" fill="none"/></svg></span></a></nav>
+<path d="M28 62 a18 18 0 0 1 10 -7" stroke="#fff" stroke-opacity=".6" stroke-width="3" stroke-linecap="round" fill="none"/></svg></span></a><a href="#mascots" class="cat-tile t-masc"><span class="cat-soon">Soon</span><span class="cat-tile-name">Mascots</span><span class="cat-tile-art"><svg viewBox="-12 0 144 110" aria-hidden="true"><defs>
+<linearGradient id="tE1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7B267"/><stop offset="1" stop-color="#E8904A"/></linearGradient>
+<linearGradient id="tE2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B98AD0"/><stop offset="1" stop-color="#8a4fa0"/></linearGradient></defs>
+<ellipse cx="60" cy="101" rx="40" ry="6" fill="#3B2A4A" opacity=".12"/>
+<ellipse cx="60" cy="88" rx="30" ry="16" fill="url(#tE1)"/><ellipse cx="60" cy="92" rx="18" ry="10" fill="#FFE3C2"/>
+<path d="M60 74 l-11 -5 v11 z M60 74 l11 -5 v11 z" fill="#E5486B"/>
+<circle cx="38" cy="38" r="10" fill="#E8904A"/><circle cx="38" cy="38" r="5" fill="#FFC9A8"/><circle cx="82" cy="38" r="10" fill="#E8904A"/><circle cx="82" cy="38" r="5" fill="#FFC9A8"/>
+<circle cx="60" cy="54" r="26" fill="url(#tE1)"/>
+<ellipse cx="60" cy="63" rx="12" ry="9" fill="#FFE3C2"/><ellipse cx="60" cy="58" rx="4.5" ry="3.2" fill="#3B2A4A"/>
+<path d="M55 65 q5 5 10 0" stroke="#3B2A4A" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+<circle cx="50" cy="48" r="3.2" fill="#3B2A4A"/><circle cx="70" cy="48" r="3.2" fill="#3B2A4A"/>
+<ellipse cx="44" cy="62" rx="4" ry="2.6" fill="#FF8FA3" opacity=".6"/><ellipse cx="76" cy="62" rx="4" ry="2.6" fill="#FF8FA3" opacity=".6"/>
+<path d="M48 32 L62 4 L73 31 Z" fill="url(#tE2)"/><circle cx="62" cy="4" r="4" fill="#FFF3BD"/>
+<circle cx="18" cy="30" r="3" fill="#FFD66B"/><circle cx="104" cy="24" r="2.5" fill="#8FD3FF"/><circle cx="98" cy="46" r="2" fill="#FF8FA3"/></svg></span></a></nav>
   </div>
 </section>
 
@@ -2285,6 +2342,82 @@
       <div class="rg-icon" aria-hidden="true"><svg class="icon" width="30" height="30"><use href="#ic-gift"/></svg></div>
       <p><b id="rgTitle">Need return gifts for the party?</b> We can arrange them, one tap away.</p>
       <button type="button" class="btn btn-primary btn-sm" data-return-gift>Ask for return gifts</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MASCOT BOOKING (coming soon) ===== -->
+<section class="section section-tight" id="mascots" aria-labelledby="mascotTitle">
+  <div class="container">
+    <div class="msc-card reveal">
+      <span class="msc-blob b1" aria-hidden="true"></span><span class="msc-blob b2" aria-hidden="true"></span><span class="msc-blob b3" aria-hidden="true"></span>
+      <div class="msc-copy">
+        <span class="msc-soon"><span class="msc-pulse" aria-hidden="true"></span>Coming soon</span>
+        <h2 id="mascotTitle">Mascot <span class="w-pink">booking</span></h2>
+        <p>Bring your kid&rsquo;s favourite characters to the party. Soon you can book a costumed mascot to join the cake cutting, dances, games and photos.</p>
+        <ul class="msc-points">
+          <li><span class="msc-tick" aria-hidden="true">&#10003;</span>Popular kids&rsquo; characters</li>
+          <li><span class="msc-tick" aria-hidden="true">&#10003;</span>Dances, games &amp; photos</li>
+          <li><span class="msc-tick" aria-hidden="true">&#10003;</span>For parties across Delhi-NCR</li>
+        </ul>
+        <div class="msc-foot">
+          <div class="msc-date">
+            <span class="msc-date-ic" aria-hidden="true"><svg class="icon" width="22" height="22"><use href="#ic-calendar"/></svg></span>
+            <span><small>Estimated date</small><b>15 Nov 2026</b></span>
+          </div>
+          <a class="btn btn-dark" id="mascotNotify" href="#" target="_blank" rel="noopener">Notify me on WhatsApp</a>
+        </div>
+      </div>
+      <div class="msc-art" aria-hidden="true">
+        <svg viewBox="0 0 320 300">
+          <defs>
+            <linearGradient id="mBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7B267"/><stop offset="1" stop-color="#E8904A"/></linearGradient>
+            <linearGradient id="mHat" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B98AD0"/><stop offset="1" stop-color="#8a4fa0"/></linearGradient>
+            <radialGradient id="mBal1" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FF9FB0"/><stop offset="1" stop-color="#e5566f"/></radialGradient>
+            <radialGradient id="mBal2" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#C9F7F6"/><stop offset="1" stop-color="#178f8d"/></radialGradient>
+            <radialGradient id="mBal3" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE9A0"/><stop offset="1" stop-color="#F5A623"/></radialGradient>
+          </defs>
+          <g class="msc-balloons">
+            <path d="M58 150 C64 190 80 210 92 232" stroke="#6b5a7a" stroke-width="1.6" fill="none"/>
+            <path d="M34 112 C44 160 72 200 92 232" stroke="#6b5a7a" stroke-width="1.6" fill="none"/>
+            <path d="M84 96 C80 150 86 200 92 232" stroke="#6b5a7a" stroke-width="1.6" fill="none"/>
+            <ellipse cx="34" cy="88" rx="22" ry="26" fill="url(#mBal2)"/><path d="M30 113 l4 -2 l4 2 z" fill="#178f8d"/>
+            <ellipse cx="84" cy="70" rx="24" ry="28" fill="url(#mBal1)"/><path d="M80 97 l4 -2 l4 2 z" fill="#e5566f"/>
+            <ellipse cx="58" cy="128" rx="20" ry="23" fill="url(#mBal3)"/><path d="M54 150 l4 -2 l4 2 z" fill="#F5A623"/>
+            <ellipse cx="76" cy="60" rx="6" ry="9" fill="#fff" opacity=".45"/><ellipse cx="27" cy="80" rx="5" ry="8" fill="#fff" opacity=".45"/>
+          </g>
+          <g class="msc-confetti">
+            <circle cx="262" cy="38" r="5" fill="#e5566f"/><circle cx="292" cy="96" r="4" fill="#178f8d"/><circle cx="130" cy="22" r="4" fill="#F5A623"/>
+            <rect x="240" y="70" width="10" height="5" rx="2" fill="#8a4fa0" transform="rotate(30 245 72)"/>
+            <rect x="150" y="56" width="10" height="5" rx="2" fill="#178f8d" transform="rotate(-25 155 58)"/>
+            <path d="M284 150 l3 7 l7 1 l-5 5 l1 7 l-6 -3 l-6 3 l1 -7 l-5 -5 l7 -1 z" fill="#F5A623"/>
+          </g>
+          <ellipse cx="190" cy="284" rx="78" ry="9" fill="#3b2a4a" opacity=".12"/>
+          <ellipse cx="162" cy="276" rx="26" ry="12" fill="#C9743A"/><ellipse cx="218" cy="276" rx="26" ry="12" fill="#C9743A"/>
+          <path d="M140 196 C116 206 104 222 96 232" stroke="#EE9C52" stroke-width="24" stroke-linecap="round" fill="none"/>
+          <circle cx="94" cy="234" r="13" fill="#E8904A"/>
+          <ellipse cx="190" cy="222" rx="64" ry="60" fill="url(#mBody)"/>
+          <ellipse cx="190" cy="232" rx="40" ry="38" fill="#FFE3C2"/>
+          <g class="msc-wave">
+            <path d="M242 196 C262 182 272 160 276 138" stroke="#F2A35C" stroke-width="24" stroke-linecap="round" fill="none"/>
+            <circle cx="277" cy="132" r="14" fill="#E8904A"/>
+          </g>
+          <path d="M190 170 l-22 -11 v24 z M190 170 l22 -11 v24 z" fill="#e5566f"/><circle cx="190" cy="170" r="6" fill="#B9395A"/>
+          <circle cx="146" cy="70" r="20" fill="#E8904A"/><circle cx="146" cy="70" r="10" fill="#FFC9A8"/>
+          <circle cx="234" cy="70" r="20" fill="#E8904A"/><circle cx="234" cy="70" r="10" fill="#FFC9A8"/>
+          <circle cx="190" cy="110" r="56" fill="url(#mBody)"/>
+          <ellipse cx="190" cy="128" rx="26" ry="20" fill="#FFE3C2"/>
+          <ellipse cx="190" cy="118" rx="9" ry="6.5" fill="#3b2a4a"/>
+          <path d="M180 132 q10 10 20 0" stroke="#3b2a4a" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <g class="msc-eyes"><circle cx="168" cy="98" r="6.5" fill="#3b2a4a"/><circle cx="212" cy="98" r="6.5" fill="#3b2a4a"/>
+          <circle cx="170" cy="96" r="2" fill="#fff"/><circle cx="214" cy="96" r="2" fill="#fff"/></g>
+          <ellipse cx="156" cy="124" rx="9" ry="6" fill="#FF8FA3" opacity=".55"/><ellipse cx="224" cy="124" rx="9" ry="6" fill="#FF8FA3" opacity=".55"/>
+          <path d="M166 62 L196 8 L218 60 Z" fill="url(#mHat)"/>
+          <path d="M174 48 L208 40 M182 32 L203 27" stroke="#FFF3BD" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="196" cy="8" r="8" fill="#FFF3BD"/>
+          <path d="M162 62 q28 10 60 -2" stroke="#B4F2F1" stroke-width="6" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
     </div>
   </div>
 </section>
@@ -7929,6 +8062,9 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   var PARTNER_WHATSAPP = '917428440491';  /* EazyPlay's WhatsApp business number with country code, digits only, e.g. 919876543210 */
 
   /* floating WhatsApp button: opens a chat with the EazyPlay team; until the number is set it opens the support form instead */
+  var mascotNotify = document.getElementById('mascotNotify');
+  if(PARTNER_WHATSAPP) mascotNotify.href = 'https://wa.me/' + PARTNER_WHATSAPP + '?text=' + encodeURIComponent('Hi EazyPlay! Please let me know when mascot booking opens.');
+  else mascotNotify.hidden = true;
   var waFloat = document.getElementById('waFloat');
   if(PARTNER_WHATSAPP){
     waFloat.href = 'https://wa.me/' + PARTNER_WHATSAPP + '?text=' + encodeURIComponent('Hi EazyPlay! I need help planning something fun for my kid.');
