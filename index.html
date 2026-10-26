@@ -812,9 +812,9 @@
   .modal-overlay{
     position:fixed; inset:0; background:rgba(59,42,74,.55); backdrop-filter:blur(4px);
     display:flex; align-items:center; justify-content:center; z-index:500; padding:20px;
-    opacity:0; pointer-events:none; transition:opacity .25s ease;
+    opacity:0; visibility:hidden; pointer-events:none; transition:opacity .25s ease, visibility 0s linear .25s;
   }
-  .modal-overlay.open{ opacity:1; pointer-events:auto; }
+  .modal-overlay.open{ opacity:1; visibility:visible; pointer-events:auto; transition:opacity .25s ease, visibility 0s; }
   .modal-panel{
     position:relative; background:#fff; border-radius:28px; max-width:420px; width:100%;
     max-height:90vh; overflow-y:auto;
@@ -1589,6 +1589,8 @@
   body::before, body::after{ content:""; position:fixed; inset:0; pointer-events:none; }
   body::before{ z-index:-2; background:#e9e2d6 url('img/bg-kids-play.jpg') center 35% / cover no-repeat; }
   body::after{ z-index:-1; background:linear-gradient(180deg, rgba(250,249,246,.88) 0%, rgba(250,249,246,.94) 40%, rgba(250,249,246,.97) 100%); }
+  /* phones: the photo is almost covered anyway, and a fixed full-screen layer behind the page makes scrolling jerky */
+  @media (max-width:900px), (hover:none){ body::before, body::after{ content:none; } }
   h1, h2, h3, h4{ font-weight:700; letter-spacing:-.015em; }
 
   /* header */
@@ -1771,7 +1773,7 @@
   .ex-tag:not(.real)::before{ content:"i"; font:italic 700 12px/1 Georgia, serif; text-transform:none; color:var(--ink-soft); }
   :is(.xcard, .ex-card, .fx-poster, .vn-hero):hover .ex-tag:not(.real), .ex-tag:not(.real):hover{ font-size:.58rem; width:auto; padding:3px 9px 3px 7px; }
   /* photos shimmer softly until they arrive instead of sitting as flat yellow boxes */
-  .xcard-art, .ex-photo, .fx-poster{ background:linear-gradient(100deg, var(--muted-bg) 30%, #fbf9fc 50%, var(--muted-bg) 70%) 0 0 / 250% 100%; animation:phShimmer 1.4s linear infinite; }
+  .xcard-art, .ex-photo, .fx-poster{ background:linear-gradient(100deg, var(--muted-bg) 30%, #fbf9fc 50%, var(--muted-bg) 70%) 0 0 / 250% 100%; animation:phShimmer 1.4s linear 3; }
   img.xcard-photo{ background:transparent; }
   @keyframes phShimmer{ from{ background-position:100% 0; } to{ background-position:-150% 0; } }
   @media (prefers-reduced-motion: reduce){ .xcard-art, .ex-photo, .fx-poster{ animation:none; } }
@@ -2242,7 +2244,7 @@
         <div class="fc-top"><span class="fc-ic g-grape"><svg class="icon" width="16" height="16"><use href="#ic-school"/></svg></span><div><div class="fc-title">Little Sprouts Montessori</div><div class="fc-sub">Gurgaon · Playschool</div></div></div>
         <div class="fc-price">₹8,000/mo</div>
       </div>
-      <figure class="polaroid pol-1"><span class="tape"></span><img src="img/evt-5.jpg" alt=""><figcaption>Carousel Sundays</figcaption></figure><figure class="polaroid pol-2"><span class="tape"></span><img src="img/camp-6.jpg" alt=""><figcaption>Weekend adventures</figcaption></figure>
+      <figure class="polaroid pol-1"><span class="tape"></span><img loading="lazy" src="img/evt-5.jpg" alt=""><figcaption>Carousel Sundays</figcaption></figure><figure class="polaroid pol-2"><span class="tape"></span><img loading="lazy" src="img/camp-6.jpg" alt=""><figcaption>Weekend adventures</figcaption></figure>
       <button type="button" class="peek-bunny" id="peekBunny" tabindex="-1" aria-label="Chat with Eazyyy"><span class="peek-bubble">Psst… ask me!</span><svg viewBox="0 0 90 96"><g stroke="#3b2a4a" stroke-width="3" stroke-linejoin="round"><g class="peek-ear-l"><ellipse cx="30" cy="24" rx="9" ry="22" fill="#E2C5E8" transform="rotate(-10 30 24)"/><ellipse cx="30" cy="26" rx="3.5" ry="13" fill="#FFC2C2" stroke="none" transform="rotate(-10 30 26)"/></g><g class="peek-ear-r"><ellipse cx="60" cy="24" rx="9" ry="22" fill="#E2C5E8" transform="rotate(10 60 24)"/><ellipse cx="60" cy="26" rx="3.5" ry="13" fill="#FFC2C2" stroke="none" transform="rotate(10 60 26)"/></g><path d="M14 96 V70 a31 31 0 0 1 62 0 V96Z" fill="#E2C5E8"/></g><circle class="kz-eye" cx="35" cy="66" r="3.6" fill="#3b2a4a"/><circle class="kz-eye" cx="55" cy="66" r="3.6" fill="#3b2a4a"/><ellipse cx="27" cy="76" rx="5" ry="3" fill="#e5566f" opacity=".35"/><ellipse cx="63" cy="76" rx="5" ry="3" fill="#e5566f" opacity=".35"/><ellipse cx="45" cy="72" rx="2.6" ry="1.8" fill="#e5566f"/><path d="M40 77 Q45 82 50 77" stroke="#3b2a4a" stroke-width="2.6" fill="none" stroke-linecap="round"/><g stroke="#3b2a4a" stroke-width="3" fill="#E2C5E8"><ellipse cx="22" cy="90" rx="9" ry="6"/><ellipse cx="68" cy="90" rx="9" ry="6"/></g></svg></button>
     </div>
   </div>
@@ -3778,7 +3780,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     '</svg>';
   function sceneHTML(kind, id){ var f = SCENES[kind] || SCENES.softplay; return f(id); }
   (function(){
-    var f = document.getElementById('heroVideoFrame'); if(!f) return;
+    var f = document.getElementById('heroVideoFrame'); if(!f || f.closest('[data-off]')) return;
     var SLIDES = [['act-trampoline','Trampoline parks'],['evt-5','Carousel Sundays'],['party-2','Birthday parties'],['camp-6','Adventure camps'],['act-softplay','Soft play for toddlers'],['act-gokart','Go-karting'],['mov-3','Birthday screenings']];
     f.classList.add('has-photo');
     f.insertAdjacentHTML('afterbegin', SLIDES.map(function(sl, i){ return '<img class="hero-slide'+(i === 0 ? ' on' : '')+'" src="img/'+sl[0]+'.jpg" alt=""'+(i ? ' loading="lazy"' : '')+'>'; }).join('') +
