@@ -1403,6 +1403,8 @@
   .ex-photo .ex-ic{ position:absolute; left:10px; bottom:-18px; width:40px; height:40px; border:3px solid #fff; box-shadow:var(--shadow-sm); }
   .ex-tag{ position:absolute; right:8px; top:8px; font-size:.62rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; padding:3px 8px; border-radius:999px; background:rgba(255,255,255,.9); color:var(--ink-soft); }
   .ex-tag.real{ background:#e8faf0; color:#15803d; }
+  /* "Venue photo" label hidden on request (2026-10-26); Google Maps photos keep their photographer credit */
+  .ex-tag.real:not(.gp-tag){ display:none !important; }
   .ex-card .ex-main{ padding:24px 14px 14px; }
   .ex-empty{ grid-column:1/-1; text-align:center; padding:40px 16px; color:var(--ink-faint); font-weight:700; }
   .ex-more-row{ display:flex; justify-content:center; margin-top:18px; }
