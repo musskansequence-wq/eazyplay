@@ -4943,7 +4943,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     document.getElementById('vnThumbs').innerHTML = vnShots.length > 1 ? vnShots.map(function(sh, i){
       return '<button type="button" class="vn-thumb' + (i ? '' : ' on') + '" data-vshot="' + i + '" aria-pressed="' + (i === 0) + '" aria-label="Photo ' + (i + 1) + (sh.cap ? ': ' + kzEsc(sh.cap) : '') + '"><img src="' + kzEsc(sh.src) + '" alt="" loading="lazy"></button>';
     }).join('') : '';
-    var srcNote = document.getElementById('vnSrc'); srcNote.hidden = !r.source_note; srcNote.textContent = r.source_note || '';
+    /* r.source_note (where the photos came from) stays in the db but isn't shown */ var srcNote = document.getElementById('vnSrc'); srcNote.hidden = true; srcNote.textContent = '';
     document.getElementById('vnImg').src = main;
     vnSetTag(r);
     document.getElementById('vnType').textContent = r.type;
