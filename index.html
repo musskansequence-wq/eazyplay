@@ -1587,7 +1587,8 @@
   html{ background:var(--cream); }
   body{ background:transparent; }
   body::before, body::after{ content:""; position:fixed; inset:0; pointer-events:none; }
-  body::before{ z-index:-2; background:#e9e2d6 url('img/bg-kids-play.jpg') center 35% / cover no-repeat; }
+  body::before{ z-index:-2; background:#e9e2d6; }
+  @media (min-width:901px) and (hover:hover){ body::before{ background:#e9e2d6 url('img/bg-kids-play.jpg') center 35% / cover no-repeat; } }
   body::after{ z-index:-1; background:linear-gradient(180deg, rgba(250,249,246,.88) 0%, rgba(250,249,246,.94) 40%, rgba(250,249,246,.97) 100%); }
   /* phones: the photo is almost covered anyway, and a fixed full-screen layer behind the page makes scrolling jerky */
   @media (max-width:900px), (hover:none){ body::before, body::after{ content:none; } }
