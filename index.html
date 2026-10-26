@@ -4787,7 +4787,6 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       (facts ? '<span class="tp-facts">' + facts + '</span>' : '') +
       '<span class="ex-links"><button type="button" class="see-photos" data-open-venue="' + kzEsc(r.id) + '">View details</button><a href="' + maps + '" target="_blank" rel="noopener"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-pin"/></svg>Directions</a>' +
       (/^https:\/\//.test(r.web || '') ? '<a href="' + kzEsc(r.web) + '" target="_blank" rel="noopener"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-external"/></svg>Website</a>' : '') +
-      (/^https:\/\//.test(r.src || '') ? '<a href="' + kzEsc(r.src) + '" target="_blank" rel="noopener">Listed on ' + kzEsc(tpHost(r.src)) + '</a>' : '') +
       '</span></div></article>';
   }
   function exImg(r){
@@ -5016,8 +5015,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     var maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(r.address || [r.name, r.place, r.area, r.region].filter(Boolean).join(' '));
     document.getElementById('vnLinks').innerHTML = '<a href="' + photosUrl(r) + '" target="_blank" rel="noopener" class="see-photos"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-star"/></svg>See photos on Google Maps</a><a href="' + maps + '" target="_blank" rel="noopener"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-pin"/></svg>Directions</a>' +
       (/^https:\/\//.test(r.web || '') ? '<a href="' + kzEsc(r.web) + '" target="_blank" rel="noopener"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-external"/></svg>Website</a>' : '') +
-      (/^https:\/\/wa\.me\//.test(r.whatsapp || '') ? '<a href="' + kzEsc(r.whatsapp) + '" target="_blank" rel="noopener">WhatsApp</a>' : '') +
-      (/^https:\/\//.test(r.src || '') ? '<a href="' + kzEsc(r.src) + '" target="_blank" rel="noopener">Listed on ' + kzEsc(tpHost(r.src)) + '</a>' : '');
+      (/^https:\/\/wa\.me\//.test(r.whatsapp || '') ? '<a href="' + kzEsc(r.whatsapp) + '" target="_blank" rel="noopener">WhatsApp</a>' : '');
     var price = document.getElementById('vnPrice'), sub = document.getElementById('vnPriceSub'), btn = document.getElementById('vnBook');
     var payNote;
     if(r.__noBook){ price.textContent = r.type === 'Playground' ? 'Free to visit' : 'Tickets at the venue'; sub.textContent = r.type === 'Swimming pool' ? 'Members and guests' : 'No booking needed'; payNote = r.type === 'Playground' ? 'It\u2019s a public park, so it\u2019s free.' : 'You pay at the venue, if there is an entry fee.'; }
