@@ -4986,7 +4986,8 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
           pl.options.map(function(o){ return '<tr><th scope="row">' + kzEsc(o.label) + '</th>' + (split ? cell(o.wd, !wkToday, null, o.wdMrp) + cell(o.we, wkToday, null, o.weMrp) : cell(o.wd, false, o, o.wdMrp)) + '</tr>'; }).join('') + '</tbody></table></div>';
       }
       if((pl.notes || []).length) ph += '<ul class="vn-pnotes">' + pl.notes.map(function(n){ return '<li>' + kzEsc(n) + '</li>'; }).join('') + '</ul>';
-      if(/^https:\/\//.test(pl.src || '')) ph += '<p class="vn-psrc">' + (pl.off ? 'Venue prices (crossed out) from ' : pl.listing ? 'As listed on ' : 'From ') + '<a href="' + kzEsc(pl.src) + '" target="_blank" rel="noopener">' + kzEsc(tpHost(pl.src)) + '</a>' + (pl.checked ? ', checked ' + new Date(pl.checked + 'T00:00:00').toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) : '') + '. Venues can change prices and hours, so check with them on public holidays.</p>';
+      /* where the prices came from is kept in pl.src but not named on the page */
+      if(pl.checked) ph += '<p class="vn-psrc">' + (pl.off ? 'Venue prices (crossed out) checked ' : 'Prices checked ') + new Date(pl.checked + 'T00:00:00').toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) + '. Venues can change prices and hours, so check with them on public holidays.</p>';
       plEl.innerHTML = ph; plEl.hidden = false;
     }else{ plEl.innerHTML = ''; plEl.hidden = true; }
     var pTab = document.getElementById('vnTabPrices');
