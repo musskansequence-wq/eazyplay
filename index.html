@@ -4924,11 +4924,10 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       document.getElementById('vnPanel' + k).hidden = !on;
     });
   }
-  /* ratings: the venue's own claim (rating text) or parents' reviews collected from a listing site (stars, reviews, reviewsSrc) */
+  /* ratings: the venue's own claim (rating text) or parents' reviews collected from a listing site (stars, reviews); the site isn't named on the page */
   function vnRatingText(r){
     if(r.stars){
-      var src = /^https:\/\//.test(r.reviewsSrc || '') ? ' on <a href="' + kzEsc(r.reviewsSrc) + '" target="_blank" rel="noopener">' + kzEsc(tpHost(r.reviewsSrc)) + '</a>' : '';
-      return '<b>' + Number(r.stars).toFixed(1) + '</b> / 5 from ' + Number(r.reviews || 0) + ' parent review' + (r.reviews == 1 ? '' : 's') + src + (r.reviewsChain ? ' (across all ' + kzEsc(r.name.split(/\s/)[0]) + ' branches)' : '');
+      return '<b>' + Number(r.stars).toFixed(1) + '</b> / 5 from ' + Number(r.reviews || 0) + ' parent review' + (r.reviews == 1 ? '' : 's');
     }
     return r.rating ? kzEsc(r.rating) : '';
   }
