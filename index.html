@@ -7416,7 +7416,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       '<p><button type="button" class="info-link" data-coupon-demo>See how a coupon arrives</button></p>' +
       '<p>Questions about a coupon? <button type="button" class="info-link" data-info-go="contact">Contact us</button>.</p>'},
     privacy:{kicker:'Legal', title:'Privacy Policy', body:
-      '<h4>What we collect</h4><p>When you book or sign up we collect your name, mobile number and email, and for bookings the names and ages of the kids coming. We also keep the city or area you pick so we can show places near you.</p>' +
+      '<h4>What we collect</h4><p>When you book or sign up we collect your name, mobile number and email, and for bookings the names and ages of the kids coming. We also keep the city or area you pick so we can show places near you. If you sign in with Google, Google shares your name, email address and profile picture with us; we use them only to create and sign in to your EazyPlay account.</p>' +
       '<h4>How we use it</h4><ul><li>To make your booking and send your tickets on WhatsApp and email</li><li>To share what a venue needs to know about your booking (name, phone, number of kids and adults)</li><li>To send updates about your booking, and weekend picks if you ask for them</li></ul>' +
       '<h4>What we don\u2019t do</h4><p>We don\u2019t sell your personal information.</p>' +
       '<h4>Your choices</h4><p>You can ask us to update or delete your details at any time through our <button type="button" class="info-link" data-info-go="contact">contact form</button>.</p>'},
@@ -7448,6 +7448,10 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     if(!keepFocus && infoLastFocus) infoLastFocus.focus();
   }
   document.getElementById('infoCloseBtn').addEventListener('click', function(){ closeInfo(); });
+  // direct links such as eazyplay.in/#privacy or /#terms open that page (Google sign-in settings link to them)
+  function openInfoFromHash(){ var k = location.hash.slice(1); if(k && k !== 'contact' && INFO_PAGES[k]) openInfo(k); }
+  openInfoFromHash();
+  window.addEventListener('hashchange', openInfoFromHash);
   infoModal.addEventListener('click', function(e){
     if(e.target === infoModal){ closeInfo(); return; }
     var go = e.target.closest('[data-info-go]'); if(go){ openInfo(go.getAttribute('data-info-go')); return; }
