@@ -5857,6 +5857,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     if(booker){
       if(booker.dob) rows.unshift(['Birthday child', booker.name + ' (born ' + new Date(booker.dob + 'T00:00:00').toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) + ')'], ['Parent’s contact', booker.phone + ' · ' + booker.email]);
       else rows.unshift(['Booked By', booker.name + ' · ' + booker.phone]);
+      if(booker.ref) rows.unshift(['Booking ID', booker.ref]);
       if(booker.kids && booker.kids.length){
         rows.push(['Children', booker.kids.map(function(k){ return k.name + (k.age ? ' ('+k.age+')' : ''); }).join(', ')]);
       }
@@ -5892,6 +5893,25 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       wa.href = 'https://wa.me/' + PARTNER_WHATSAPP + '?text=' + encodeURIComponent(lines.join('\n'));
       wa.hidden = false;
     }
+  }
+  /* no-cors: Apps Script answers with a redirect the page can't read; the row is still added */
+  function sendBookingToSheet(type, item, booker){
+    if(!BOOKING_SHEET_URL || !booker) return;
+    var L = booker.live || {};
+    var kinds = {play:'Play area / playdate', party:'Birthday party', activity:'Activity', movie:'Birthday movie screening', event:'Kids event'};
+    var data = {
+      ref: booker.ref || '', type: booker.dob ? 'Birthday party' : kinds[item.kind] || kinds[type] || type,
+      venue: item.name || item.title || '', venueId: item.id || '', area: item.area || item.venue || '', city: item.city || '',
+      date: (booker.iso || '') + (L.day ? ' (' + L.day + ')' : ''), time: L.time || '', ticket: L.ticket || '',
+      kids: L.qty || '', adults: L.adults || '', name: booker.name, dob: booker.dob || '', mobile: booker.phone, email: booker.email,
+      children: (booker.kids || []).map(function(k){ return k.name + (k.age ? ' (' + k.age + ')' : ''); }).join(', '),
+      theme: L.theme || '', coupon: L.coupon || '', amount: L.total || 0,
+      payment: item.request ? 'Request, no payment' : !L.total ? 'Free' : (item.advance ? 'Advance' : 'Full') + ' by ' + (booker.method || 'UPI') + ' (to check)',
+      utr: booker.utr || '', page: location.hostname || 'file'
+    };
+    try{
+      fetch(BOOKING_SHEET_URL, {method:'POST', mode:'no-cors', keepalive:true, headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(data)}).catch(function(){});
+    }catch(err){}
   }
   function closeBookingModal(){
     modal.classList.remove('open');
@@ -6488,11 +6508,14 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     if(booker.method) booker.utr = utr;
     bk.paid = false;
     lastLive = booker.live;
+    booker.iso = live.days[live.day].iso;
+    booker.ref = 'EP' + Date.now().toString(36).slice(-4).toUpperCase() + Math.random().toString(36).slice(2, 4).toUpperCase();
     var soldKey = liveKey(live.days[live.day].iso, live.slot);
     live.sold[soldKey] = (live.sold[soldKey] || 0) + live.qty;
     live.slot = null;
     var booking = pendingBooking;
     closeBookingFormModal();
+    sendBookingToSheet(booking.type, booking.item, booker);
     openBookingModal(booking.type, booking.item, booker);
   });
 
@@ -8059,6 +8082,9 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
 
   /* ---------- LIST YOUR VENUE: venue owners send their details to the EazyPlay team on WhatsApp ---------- */
   var SUPPORT_EMAIL = 'support@eazyplay.in';
+  /* every booking is also added as a row to the "EazyPlay Bookings" Google Sheet, through the Apps Script web app
+     in data/booking-sheet-script.gs (it can only add rows, not read them). Empty = off. */
+  var BOOKING_SHEET_URL = '';
   var PARTNER_WHATSAPP = '917428440491';  /* EazyPlay's WhatsApp business number with country code, digits only, e.g. 919876543210 */
 
   /* floating WhatsApp button: opens a chat with the EazyPlay team; until the number is set it opens the support form instead */
