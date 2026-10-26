@@ -1809,6 +1809,8 @@
   var root = document.documentElement;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduce || !document.body.animate) return;
+  /* phones: no logo build. It starts only after every photo has loaded, so on a phone it ran late, mid-scroll */
+  if(window.matchMedia && window.matchMedia('(max-width:900px), (hover:none)').matches) return;
   /* hide the logo letters until the build starts, so the "e" can drop in (removed again if anything goes wrong) */
   var safety = 0;
   var intro = document.getElementById('intro');
