@@ -232,6 +232,7 @@
   /* Google + email-link login (only shown once Firebase is set up on EazyPlay's own domain) */
   .auth-alt{ display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
   .auth-alt[hidden], .auth-link-form[hidden], .auth-link-sent[hidden]{ display:none; }
+  .auth-gis{ display:flex; justify-content:center; min-height:44px; }
   .auth-alt-btn{ display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:11px 14px; border:2px solid var(--border); border-radius:14px; background:#fff; color:var(--ink); font:inherit; font-weight:800; font-size:.92rem; cursor:pointer; transition:border-color .15s ease, background .15s ease; }
   .auth-alt-btn:hover, .auth-alt-btn[aria-expanded="true"]{ border-color:var(--grape); }
   .auth-alt-btn[disabled]{ opacity:.6; cursor:wait; }
@@ -2929,6 +2930,7 @@
         </div>
         <div class="auth-alt" id="authAlt" hidden>
           <button type="button" class="auth-alt-btn" id="authGoogleBtn"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</button>
+          <div class="auth-gis" id="authGoogleGis" hidden></div>
           <button type="button" class="auth-alt-btn" id="authEmailLinkBtn" aria-expanded="false" aria-controls="authLinkForm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>Email me a login link</button>
           <form class="auth-link-form" id="authLinkForm" novalidate hidden>
             <input type="email" id="authLinkEmail" placeholder="you@example.com" autocomplete="email" aria-label="Your email">
@@ -6732,6 +6734,8 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   /* ---------- SIGN-UP: mobile verification code ----------
      No SMS gateway is connected, so the code is shown as an on-screen demo message.
      To go live, generate and check the code on a server and send it through an SMS provider. */
+  /* OTP_ON = false: sign-up asks for the mobile number without a code (no SMS cost). Set true once a real SMS/WhatsApp OTP service is connected. */
+  var OTP_ON = false;
   var otp = {code:null, phone:null, verified:false, expires:0, resendAt:0, tick:null, smsTimer:null};
   var authPhoneEl = document.getElementById('authPhone');
   var otpSendBtn = document.getElementById('otpSendBtn');
@@ -6827,7 +6831,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       if(wasVerified) otpNote.textContent = 'Number changed, so we need to verify it again.';
     }
     syncSendBtn();
-    if(authMode === 'signup' && clean.length === 10 && !otp.phone) sendOtp();
+    if(OTP_ON && authMode === 'signup' && clean.length === 10 && !otp.phone) sendOtp();
   });
   otpSendBtn.addEventListener('click', sendOtp);
   otpResend.addEventListener('click', sendOtp);
@@ -6915,9 +6919,9 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     document.getElementById('authName').required = mode === 'signup';
     authPerk.hidden = mode === 'login';
     authSubmitBtn.textContent = mode === 'signup' ? 'Create My Account' : 'Log In';
-    otpSendBtn.hidden = mode !== 'signup';
-    document.getElementById('otpNote').hidden = mode !== 'signup';
-    if(mode !== 'signup'){ otpBlock.hidden = true; smsDemo.hidden = true; }
+    otpSendBtn.hidden = !OTP_ON || mode !== 'signup';
+    document.getElementById('otpNote').hidden = !OTP_ON || mode !== 'signup';
+    if(!OTP_ON || mode !== 'signup'){ otpBlock.hidden = true; smsDemo.hidden = true; }
     else if(otp.phone && !otp.verified){ otpBlock.hidden = false; }
     document.getElementById('authEmail').required = mode === 'signup';
   }
@@ -6962,12 +6966,20 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
      Accounts are still kept in this browser (wonderhop_users); Firebase only proves who the parent is. */
   var FIREBASE_CONFIG = null;  /* e.g. { apiKey:'…', authDomain:'eazyplay-xxxx.firebaseapp.com', projectId:'eazyplay-xxxx', appId:'…' } */
   var FB = {auth:null, ready:false, pending:null};
+  /* Google's own "Sign in with Google" button (Google Identity Services), used when Firebase isn't set up.
+     Paste the OAuth Web client ID from Google Cloud Console > Google Auth Platform > Clients; its Authorized
+     JavaScript origins must include https://eazyplay.in. Free; Google only proves who the parent is. */
+  var GOOGLE_CLIENT_ID = '';
+  var GIS_ON = !!GOOGLE_CLIENT_ID && window.top === window && !/(^|\.)(claude\.ai|claude\.site|claudeusercontent\.com)$/.test(location.hostname);
   var FB_ON = !!(FIREBASE_CONFIG && FIREBASE_CONFIG.apiKey) && window.top === window && !/(^|\.)(claude\.ai|claude\.site|claudeusercontent\.com)$/.test(location.hostname);
   var authAlt = document.getElementById('authAlt');
   var authViews = ['authFormView', 'authSuccessView', 'authFinishView', 'authConfirmView'];
   function showAuthView(id){ authViews.forEach(function(v){ document.getElementById(v).hidden = v !== id; }); }
   function fbResetUi(){
-    authAlt.hidden = !FB_ON;
+    authAlt.hidden = !FB_ON && !GIS_ON;
+    document.getElementById('authGoogleBtn').hidden = !FB_ON;
+    document.getElementById('authEmailLinkBtn').hidden = !FB_ON;
+    gisRender();
     document.getElementById('authLinkForm').hidden = true;
     document.getElementById('authLinkSent').hidden = true;
     document.getElementById('authEmailLinkBtn').setAttribute('aria-expanded', 'false');
@@ -7074,6 +7086,36 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ var er = document.getElementById('authConfirmErr'); er.textContent = 'Enter the email the link was sent to.'; er.hidden = false; return; }
     fbCompleteLink(email);
   });
+  /* Google Identity Services: Google draws the button; its answer is a signed token naming the account */
+  var GIS = {ready:false};
+  function gisRender(){
+    var box = document.getElementById('authGoogleGis');
+    box.hidden = FB_ON || !GIS_ON || !GIS.ready;
+    if(box.hidden) return;
+    box.innerHTML = '';
+    google.accounts.id.renderButton(box, {type:'standard', theme:'outline', size:'large', shape:'pill', text:'continue_with', logo_alignment:'center', width:Math.min(400, Math.max(240, authAlt.offsetWidth || 320))});
+  }
+  function gisPayload(jwt){
+    var b = String(jwt).split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    while(b.length % 4) b += '=';
+    return JSON.parse(decodeURIComponent(Array.prototype.map.call(atob(b), function(c){ return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join('')));
+  }
+  if(GIS_ON && !FB_ON){
+    var gs = document.createElement('script');
+    gs.src = 'https://accounts.google.com/gsi/client'; gs.async = true;
+    gs.onload = function(){
+      google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID, ux_mode:'popup', auto_select:false, cancel_on_tap_outside:true, callback:function(res){
+        var g; try{ g = gisPayload(res.credential); }catch(err){ g = null; }
+        if(!g || !g.sub || g.aud !== GOOGLE_CLIENT_ID){ showAuthError('Couldn’t sign you in with Google. Try again, or use your mobile number.'); return; }
+        clearAuthError();
+        fbFinish({uid:'google:' + g.sub, email:g.email_verified === false ? '' : (g.email || ''), displayName:g.name || ''}, 'google');
+      }});
+      GIS.ready = true;
+      if(authModal.classList.contains('open')){ authAlt.hidden = false; gisRender(); }
+    };
+    gs.onerror = function(){ GIS_ON = false; };
+    document.head.appendChild(gs);
+  }
   if(FB_ON){
     fbLoad().then(function(){
       if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
@@ -7101,9 +7143,9 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       var email = document.getElementById('authEmail').value.trim();
       if(!name){ showAuthError('Please enter your name.'); return; }
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ showAuthError('Enter a valid email address, like you@example.com.'); return; }
-      if(!otp.verified || otp.phone !== phone){ showAuthError('Verify your mobile number with the 6-digit code we sent.'); (otpBlock.hidden ? authPhoneEl : otpBoxes[0]).focus(); return; }
+      if(OTP_ON && (!otp.verified || otp.phone !== phone)){ showAuthError('Verify your mobile number with the 6-digit code we sent.'); (otpBlock.hidden ? authPhoneEl : otpBoxes[0]).focus(); return; }
       if(USERS[phone]){ showAuthError('An account with this phone number already exists — try logging in instead.'); return; }
-      var newUser = {name:name, phone:phone, phoneVerified:true, email:email, password:password, points:100, memberSince:new Date().toISOString(), purchases:[]};
+      var newUser = {name:name, phone:phone, phoneVerified:OTP_ON, email:email, password:password, points:100, memberSince:new Date().toISOString(), purchases:[]};
       USERS[phone] = newUser;
       saveUsers(USERS);
       currentUser = newUser;
