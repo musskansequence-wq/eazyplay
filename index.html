@@ -815,6 +815,9 @@
     opacity:0; visibility:hidden; pointer-events:none; transition:opacity .25s ease, visibility 0s linear .25s;
   }
   .modal-overlay.open{ opacity:1; visibility:visible; pointer-events:auto; transition:opacity .25s ease, visibility 0s; }
+  .modal-overlay{ content-visibility:hidden; transition-behavior:allow-discrete; }
+  .modal-overlay:not(.open){ transition:opacity .25s ease, visibility 0s linear .25s, content-visibility 0s linear .25s; }
+  .modal-overlay.open{ content-visibility:visible; }
   .modal-panel{
     position:relative; background:#fff; border-radius:28px; max-width:420px; width:100%;
     max-height:90vh; overflow-y:auto;
@@ -3539,7 +3542,8 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   var wishlist = new Set();
 
   /* ---------- HELPERS ---------- */
-  function inr(n){ return '₹' + Math.round(n).toLocaleString('en-IN'); }
+  var INR_FMT = window.Intl ? new Intl.NumberFormat('en-IN') : null;
+  function inr(n){ n = Math.round(n); return '₹' + (INR_FMT ? INR_FMT.format(n) : n.toLocaleString('en-IN')); }
   function ageLabel(a){ return a === '13+' ? '13+' : a.replace('-', '–'); }
   function formatDate(iso){
     var d = new Date(iso+'T00:00:00');
@@ -3571,7 +3575,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     else{ navEl.classList.remove('scrolled'); }
   }
   document.addEventListener('scroll', onScrollNav, {passive:true});
-  onScrollNav();
+  requestAnimationFrame(onScrollNav);
 
   /* ---------- MOBILE MENU ---------- */
   var hamburger = document.getElementById('hamburgerBtn');
@@ -5611,7 +5615,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     }, 150);
   }
   if('IntersectionObserver' in window && !reduceMotion){
-    stackCategories();
+    requestAnimationFrame(stackCategories);
     if(document.fonts && document.fonts.ready){
       document.fonts.ready.then(function(){ if(catStage.classList.contains('stacked') && !catStage.classList.contains('grab')) stackCategories(); });
     }
@@ -6336,7 +6340,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     var navEl = document.getElementById('siteNav');
     var navMax = 0;
     function setNavH(){ var h = navEl.offsetHeight; if(h <= navMax) return; navMax = h; document.documentElement.style.setProperty('--nav-h', h + 'px'); }
-    setNavH();
+    requestAnimationFrame(setNavH);
     window.addEventListener('load', setNavH);
     if(document.fonts && document.fonts.ready) document.fonts.ready.then(setNavH);
     window.addEventListener('resize', function(){ navMax = 0; setNavH(); });
