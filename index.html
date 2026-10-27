@@ -192,7 +192,9 @@
     0%,100%{ box-shadow:0 10px 22px rgba(74,144,217,.38), 0 0 0 0 rgba(74,144,217,.55); }
     50%{ box-shadow:0 10px 22px rgba(74,144,217,.38), 0 0 0 8px rgba(74,144,217,0); }
   }
-  .pulse-cta{ animation:ctaPulse 2.6s ease-in-out infinite; }
+  .pulse-cta{ animation:ctaPulse 2.6s ease-in-out 4; }
+  /* looping drawings stop while scrolled out of view (they made phones repaint all the time) */
+  .anim-paused, .anim-paused *{ animation-play-state:paused !important; }
   .pulse-cta:hover{ animation:none; }
 
   /* ===== URGENCY / COUNTDOWN ===== */
@@ -3576,6 +3578,11 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   }
   document.addEventListener('scroll', onScrollNav, {passive:true});
   requestAnimationFrame(onScrollNav);
+  if('IntersectionObserver' in window){
+    var animIO = new IntersectionObserver(function(es){ es.forEach(function(e){ e.target.classList.toggle('anim-paused', !e.isIntersecting); }); });
+    ['mascots'].forEach(function(id){ var el = document.getElementById(id); if(el) animIO.observe(el); });
+    document.querySelectorAll('.cat-band').forEach(function(el){ animIO.observe(el); });
+  }
 
   /* ---------- MOBILE MENU ---------- */
   var hamburger = document.getElementById('hamburgerBtn');
