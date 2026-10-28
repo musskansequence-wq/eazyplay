@@ -4801,7 +4801,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     var where = [r.place, r.area, r.region].filter(Boolean).join(', ');
     var maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent([r.name, r.place, r.area, r.region].filter(Boolean).join(' '));
     var facts = (r.stars ? '<span class="tp-stars">★ ' + Number(r.stars).toFixed(1) + ' (' + Number(r.reviews || 0) + ')</span>' : '') + [r.when, r.ages, r.price, r.capacity].filter(Boolean).map(function(f){ return '<span>' + kzEsc(f) + '</span>'; }).join('');
-    return '<article class="ex-card" data-real-id="' + kzEsc(r.id) + '" tabindex="0" aria-label="' + kzEsc(r.name) + ', open details"><div class="ex-photo"><img src="' + tpImg(r) + '" alt="" loading="lazy" decoding="async">' +
+    return '<article class="ex-card" data-real-id="' + kzEsc(r.id) + '" tabindex="0" aria-label="' + kzEsc(r.name) + ', open details"><div class="ex-photo"><img src="' + cardImg(r) + '" alt="" loading="lazy" decoding="async">' +
       '<span class="tp-rank">#' + Number(r.rank) + (tpCity() === 'all' ? ' \u00b7 ' + kzEsc(r.city) : '') + '</span>' + photoTag(r) +
       '<span class="ex-ic ' + (TP_TINT[r.kind] || 'g-teal') + '"><svg class="icon" width="18" height="18" aria-hidden="true"><use href="#' + icon + '"/></svg></span></div>' +
       '<div class="ex-main"><span class="ex-type">' + kzEsc(r.type) + '</span><b>' + kzEsc(r.name) + '</b>' +
@@ -4890,6 +4890,8 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     gpWant(r);
     return exImg(r);
   }
+  /* cards, carousel and search show the smaller copy of a site venue photo (cN.jpg, 800px); the venue page shows the full one */
+  function cardImg(r){ var s = tpImg(r); return /img\/v\/[^\/]+\/\d+\.jpg$/.test(s) ? s.replace(/(\d+)\.jpg$/, 'c$1.jpg') : s; }
   function teamPhoto(r){ if(r.__photo) return !!r.__photoReal; return !!r.photo && (r.photo !== 'db' || !!VP.cache[r.id]); }
   function hasPhoto(r){ return teamPhoto(r) || (!r.photo || (r.photo === 'db' && VP.failed[r.id])) && !!GP.cache[r.id]; }
   /* the little label on a photo; Google photos carry their photographer credit */
@@ -5140,7 +5142,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       ['play', 'party', 'activity'].forEach(function(k){
         real.filter(function(r){ return r.kind === k; }).slice(0, 3).forEach(function(r){
           var bookable = realBookable(r);
-          out.push({img:tpImg(r), when:k === 'party' ? 'Birthday party venue \u00b7 Pick your date' : 'Daily, multiple slots',
+          out.push({img:cardImg(r), when:k === 'party' ? 'Birthday party venue \u00b7 Pick your date' : 'Daily, multiple slots',
             title:r.name, venue:[r.place, r.area, r.region].filter(Boolean).join(', '),
             price:bookable ? inr(realPrice(r)) + ' onwards' : (r.price || 'Price on request'), cta:bookable ? 'Book tickets' : 'View venue',
             tag:photoTag(r), open:function(){ openVenue(r); }});
@@ -5410,7 +5412,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     navResults.innerHTML = navHits.length ? navHits.map(function(h, i){
       if(h.real){
         var rr = h.real;
-        return '<button type="button" class="nav-res" role="option" data-i="' + i + '"><img src="' + kzEsc(tpImg(rr)) + '" alt=""><span class="t"><b>' + kzEsc(rr.name) + '</b><small>' + kzEsc([rr.type, [rr.place, rr.area].filter(Boolean).join(', ') || rr.city].filter(Boolean).join(' · ')) + '</small></span><em>' + ({play:'Play area', activity:'Activity', party:'Party', event:'Event', movie:'Cinema', camp:'Camp'}[rr.kind] || 'Venue') + '</em></button>';
+        return '<button type="button" class="nav-res" role="option" data-i="' + i + '"><img src="' + kzEsc(cardImg(rr)) + '" alt=""><span class="t"><b>' + kzEsc(rr.name) + '</b><small>' + kzEsc([rr.type, [rr.place, rr.area].filter(Boolean).join(', ') || rr.city].filter(Boolean).join(' · ')) + '</small></span><em>' + ({play:'Play area', activity:'Activity', party:'Party', event:'Event', movie:'Cinema', camp:'Camp'}[rr.kind] || 'Venue') + '</em></button>';
       }
       if(h.ext){
         var k = EX_KIND[h.ext.k] || EX_KIND.activity;
