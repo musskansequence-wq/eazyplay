@@ -3,12 +3,26 @@
 <html lang="en" class="no-ps">
 <head>
 <meta charset="UTF-8">
-<title>EazyPlay</title>
+<title>EazyPlay – Kids’ Play Areas, Activities &amp; Parties | Delhi-NCR</title>
+<meta name="description" content="Find and book kids’ play areas, activities and birthday party venues in Noida, Gurgaon and Delhi. Real photos, prices and timings, booked online in a minute.">
+<link rel="canonical" href="https://eazyplay.in/">
+<meta name="theme-color" content="#faf9f6">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EazyPlay">
+<meta property="og:locale" content="en_IN">
+<meta property="og:url" content="https://eazyplay.in/">
+<meta property="og:title" content="EazyPlay – Kids’ play, activities &amp; birthday parties">
+<meta property="og:description" content="Find and book the best kids’ places in Noida &amp; Delhi-NCR: play areas, activities and party venues, with real photos and prices.">
+<meta property="og:image" content="https://musskansequence-wq.github.io/eazyplay/img/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="EazyPlay: kids’ play, activities and birthday parties">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://eazyplay.in/#org","name":"EazyPlay","url":"https://eazyplay.in/","logo":"https://musskansequence-wq.github.io/eazyplay/img/icon-512.png","email":"support@eazyplay.in","areaServed":["Noida","Greater Noida","Gurgaon","Delhi"],"contactPoint":{"@type":"ContactPoint","contactType":"customer support","telephone":"+91-7428440491","email":"support@eazyplay.in","availableLanguage":["English","Hindi"]}},{"@type":"WebSite","@id":"https://eazyplay.in/#site","name":"EazyPlay","url":"https://eazyplay.in/","publisher":{"@id":"https://eazyplay.in/#org"},"inLanguage":"en-IN"}]}</script>
 <link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="img/icon-192.png">
 <link rel="apple-touch-icon" href="img/icon-180.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="EazyPlay — one platform for everything kids: activities, play areas, birthday parties, kids’ events and activities across Delhi-NCR, booked online.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Fredoka:wght@700&display=swap" rel="stylesheet">
@@ -5223,6 +5237,10 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     REAL.rows = window.PLACES_SNAPSHOT.map(function(r){ return JSON.parse(JSON.stringify(r)); });
     Object.keys(REAL_RENDER).forEach(function(k){ REAL_RENDER[k](); });
   }
+  /* a venue link (#v=<id>, used by the venue pages on eazyplay.in) opens that venue */
+  function openVenueFromHash(){ var m = /^#v=([\w-]+)$/.exec(location.hash); if(!m) return; var r = REAL.rows.find(function(x){ return x.id === m[1]; }); if(r) openVenue(r); }
+  openVenueFromHash();
+  window.addEventListener('hashchange', openVenueFromHash);
   (async function(){
     var db = null;
     try{ db = window.claude && window.claude.use ? await window.claude.use('db') : null; }catch(err){ db = null; }
