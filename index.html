@@ -1022,15 +1022,34 @@
   @media (max-width:720px){ .partner-band{ grid-template-columns:1fr; padding:28px 22px; } }
   /* vendor plans */
   /* return gifts: free for families who book on EazyPlay, arranged when they contact the team */
-  .rg-band{ display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:8px 14px; margin-top:20px; padding:10px 12px 10px 14px; border-radius:16px; background:linear-gradient(120deg, #ffe3ea, #fff3e6); border:1px solid rgba(229,86,111,.18); }
-  .rg-band .rg-icon{ width:34px; height:34px; border-radius:10px; background:#fff; display:grid; place-items:center; color:var(--pink-deep); box-shadow:0 6px 18px rgba(229,86,111,.18); }
-  .rg-band .rg-icon svg{ width:18px; height:18px; }
-  .rg-band p{ margin:0; color:var(--ink-soft); font-size:.92rem; }
-  .rg-band p b{ color:var(--ink); font-weight:800; }
-  .rg-band .btn{ white-space:nowrap; padding:8px 16px; font-size:.86rem; }
+  .rg-band{ position:relative; overflow:hidden; display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr); align-items:center; gap:20px 28px; margin-top:36px;
+    padding:clamp(26px, 4vw, 44px); border-radius:var(--radius-lg); background:linear-gradient(135deg, #ffe3ea 0%, #fff3e6 60%, #fff9e0 100%); border:1px solid rgba(229,86,111,.2); }
+  .rg-copy, .rg-art{ position:relative; }
+  .rg-tag{ display:inline-flex; align-items:center; gap:7px; padding:7px 14px 7px 10px; border-radius:999px; background:var(--pink-deep); color:#fff;
+    font-weight:800; font-size:.78rem; letter-spacing:.09em; text-transform:uppercase; box-shadow:0 8px 20px rgba(229,86,111,.28); }
+  .rg-tag svg{ width:16px; height:16px; }
+  .rg-band h2{ font-size:clamp(1.9rem, 3.6vw, 2.7rem); margin:16px 0 8px; line-height:1.1; }
+  .rg-band .rg-copy > p{ margin:0; max-width:46ch; color:var(--ink-soft); font-size:1rem; }
+  .rg-points{ list-style:none; padding:0; margin:18px 0 0; display:flex; flex-wrap:wrap; gap:8px; }
+  .rg-points li{ display:inline-flex; align-items:center; gap:7px; padding:7px 12px 7px 8px; border-radius:999px; background:rgba(255,255,255,.85); border:1px solid var(--border); font-size:.86rem; font-weight:600; }
+  .rg-points li span{ width:20px; height:20px; border-radius:50%; display:grid; place-items:center; background:#ffe3ea; color:var(--pink-deep); font-size:.72rem; font-weight:800; }
+  .rg-band .btn{ margin-top:24px; white-space:nowrap; background:var(--pink-deep); color:#fff; box-shadow:0 10px 24px -8px rgba(229,86,111,.6); }
+  .rg-band .btn:hover{ background:#d54660; }
+  .rg-art svg{ display:block; width:100%; max-width:260px; height:auto; margin-inline:auto; overflow:visible; }
+  .rg-bob{ animation:mscFloat 3.4s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce){ .rg-bob{ animation:none; } }
+  #parties + #mascots{ padding-top:56px; }
   .rg-note{ margin:14px 0 4px; padding:10px 14px; border-radius:14px; background:#fff1f4; color:var(--ink); font-size:.86rem; text-align:left; }
   .rg-note .detail-link{ margin-left:4px; }
-  @media (max-width:720px){ .rg-band{ grid-template-columns:auto minmax(0,1fr); } .rg-band .btn{ grid-column:1 / -1; justify-self:stretch; } }
+  @media (max-width:760px){
+    .rg-band{ grid-template-columns:1fr; gap:4px; text-align:center; }
+    .rg-art{ order:-1; } .rg-art svg{ max-width:112px; }
+    .rg-points{ gap:6px; margin-top:14px; } .rg-points li{ font-size:.82rem; padding:5px 10px 5px 6px; }
+    .rg-band .btn{ margin-top:18px; } .rg-points li:nth-child(3){ display:none; }
+    .rg-band .rg-copy > p{ margin-inline:auto; } .rg-points{ justify-content:center; }
+    .rg-band .btn{ width:100%; }
+    #parties + #mascots{ padding-top:72px; }
+  }
   .kids-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:8px; }
   .kid-row{ display:flex; gap:8px; align-items:center; }
   .kid-row input{
@@ -2369,9 +2388,33 @@
     </div>
     <div class="grid reveal" id="partyGrid"></div>
     <div class="rg-band" id="returnGifts" aria-labelledby="rgTitle">
-      <div class="rg-icon" aria-hidden="true"><svg class="icon" width="30" height="30"><use href="#ic-gift"/></svg></div>
-      <p><b id="rgTitle">Need return gifts for the party?</b> We can arrange them, one tap away.</p>
-      <button type="button" class="btn btn-primary btn-sm" data-return-gift>Ask for return gifts</button>
+      <div class="rg-copy">
+        <span class="rg-tag"><svg class="icon" aria-hidden="true"><use href="#ic-gift"/></svg>Party add-on</span>
+        <h2 id="rgTitle">Return <span class="w-pink">gifts</span></h2>
+        <p>Send every little guest home smiling. Tell us your party date, how many kids are coming and your budget, and we&rsquo;ll send you options and prices.</p>
+        <ul class="rg-points">
+          <li><span aria-hidden="true">&#10003;</span>Options for every budget</li>
+          <li><span aria-hidden="true">&#10003;</span>Picked for the kids&rsquo; ages</li>
+          <li><span aria-hidden="true">&#10003;</span>One tap to ask</li>
+        </ul>
+        <button type="button" class="btn btn-primary" data-return-gift>Ask for return gifts</button>
+      </div>
+      <div class="rg-art" aria-hidden="true">
+        <svg viewBox="0 0 200 190">
+          <ellipse cx="100" cy="178" rx="70" ry="8" fill="#3B2A4A" opacity=".08"/>
+          <g class="rg-bob">
+            <rect x="34" y="78" width="132" height="96" rx="12" fill="#F27C95"/>
+            <rect x="26" y="58" width="148" height="32" rx="10" fill="#E5566F"/>
+            <rect x="88" y="58" width="24" height="116" fill="#FFD166"/>
+            <rect x="34" y="90" width="132" height="8" fill="#000" opacity=".08"/>
+            <path d="M100 58 C80 26 52 30 60 48 C66 60 88 60 100 58Z" fill="#FFD166"/>
+            <path d="M100 58 C120 26 148 30 140 48 C134 60 112 60 100 58Z" fill="#FFC23D"/>
+            <circle cx="100" cy="57" r="9" fill="#F5A623"/>
+          </g>
+          <circle cx="30" cy="34" r="5" fill="#7DD3C8"/><circle cx="176" cy="26" r="4" fill="#A98BD6"/><circle cx="182" cy="96" r="5" fill="#FFD166"/><circle cx="16" cy="108" r="4" fill="#E5566F"/>
+          <path d="M160 10 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z" fill="#FFC23D"/>
+        </svg>
+      </div>
     </div>
   </div>
 </section>
