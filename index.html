@@ -4935,7 +4935,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   function planLabels(p){ return planWkend(p).indexOf(5) !== -1 ? ['Mon\u2013Thu', 'Fri\u2013Sun'] : ['Mon\u2013Fri', 'Sat\u2013Sun']; }
   function realPrice(r){ if(planBook(r)) return planMin(r.plans); var m = /\u20b9\s?([\d,]+)/.exec(r.price || ''); return m ? Number(m[1].replace(/,/g, '')) : 0; }
   /* advance to hold a slot at venues that have no price on the site; the venue confirms the final price and the advance comes off it */
-  var ADVANCE = {play:500, activity:500, party:2000, movie:2000};
+  var ADVANCE = {play:500, activity:500, party:0, movie:0};
   function realAdvance(r){ return realBookable(r) || (r.plans && r.plans.closed) ? 0 : (ADVANCE[r.kind] || 0); }
   function realBookable(r){ if(r.plans && r.plans.closed) return false; return (r.kind === 'play' || r.kind === 'activity') && (planBook(r) || (realPrice(r) > 0 && /entry|from/i.test(r.price))); }
   var INDOOR_TYPES = ['Indoor play area', 'Trampoline park', 'Arcade & games', 'Bowling', 'Escape room', 'Ice skating', 'Snow park', 'Laser tag', 'VR & gaming'];
@@ -5013,7 +5013,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       var lab = planLabels(pl), wkToday = isWkendIso(isoDay(new Date()), pl);
       var split = (pl.options || []).some(function(o){ return o.wd !== o.we; }), isParty = r.kind === 'party';
       var ph = '<div class="vn-plans-head"><h4>' + (isParty ? 'Party prices' : 'Prices') + ((pl.hours || []).length ? ' &amp; timings' : '') + (pl.off && !pl.closed ? '<span class="vn-off">' + pl.off + '% off on EazyPlay</span>' : '') + '</h4>' + (pl.closed ? '<span class="vn-closed">Temporarily closed</span>' : split ? '<span class="vn-today">Today: ' + (wkToday ? 'weekend' : 'weekday') + ' prices</span>' : '') + '</div>';
-      if(pl.quote && !pl.closed) ph += '<p class="vn-quote">' + kzEsc(r.name) + ' shares party packages on request. Book with the ' + inr(realAdvance(r)) + ' advance to hold your date: the venue confirms the package and final price, and the advance comes off it.</p>';
+      if(pl.quote && !pl.closed) ph += '<p class="vn-quote">' + kzEsc(r.name) + ' shares party packages on request. ' + (realAdvance(r) ? 'Book with the ' + inr(realAdvance(r)) + ' advance to hold your date: the venue confirms the package and final price, and the advance comes off it.' : 'Send a free party request for your date: the venue confirms the package and final price.') + '</p>';
       if((pl.hours || []).length) ph += '<ul class="vn-hours">' + pl.hours.map(function(h){ return '<li><b>' + kzEsc(h.days) + '</b><span' + (/closed/i.test(h.time) ? ' class="shut"' : '') + '>' + kzEsc(h.time) + '</span></li>'; }).join('') + '</ul>';
       if((pl.options || []).length){
         /* mrp: the venue's own price, struck through when EazyPlay's price is lower */
