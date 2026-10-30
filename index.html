@@ -1800,6 +1800,20 @@
   .gp-tag a{ color:inherit; text-decoration:underline; }
   .gp-tag{ max-width:calc(100% - 20px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .ex-links .see-photos{ display:inline-flex; align-items:center; gap:5px; font:inherit; font-size:.76rem; font-weight:800; border-radius:999px; padding:4px 12px; cursor:pointer; background:var(--ink); color:#ffffff; border:1px solid var(--ink); text-decoration:none; }
+  .ex-links .ep-share{ display:inline-flex; align-items:center; gap:5px; font:inherit; font-size:.76rem; font-weight:800; border-radius:999px; padding:4px 10px; cursor:pointer; background:var(--cream); color:var(--ink); border:1px solid var(--border); }
+  .ex-links .ep-share:hover{ border-color:var(--grape); color:var(--grape); }
+  .vn-share{ display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:.82rem; font-weight:800; border-radius:999px; padding:6px 14px; margin:2px 0 8px; cursor:pointer; background:var(--cream); color:var(--ink); border:1px solid var(--border); }
+  .vn-share:hover{ border-color:var(--grape); color:var(--grape); }
+  .sh-overlay{ position:fixed; inset:0; z-index:700; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(59,42,74,.55); }
+  .sh-overlay[hidden]{ display:none; }
+  .sh-sheet{ width:100%; max-width:380px; background:var(--card); border-radius:20px; padding:18px 18px 14px; box-shadow:0 18px 50px rgba(0,0,0,.25); }
+  .sh-sheet h4{ margin:0 0 2px; font-size:1.05rem; }
+  .sh-sheet p{ margin:0 0 14px; font-size:.84rem; color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .sh-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; }
+  .sh-grid a, .sh-grid button{ display:flex; flex-direction:column; align-items:center; gap:6px; font:inherit; font-size:.74rem; font-weight:800; color:var(--ink); text-decoration:none; background:none; border:0; padding:6px 2px; border-radius:12px; cursor:pointer; }
+  .sh-grid a:hover, .sh-grid button:hover{ background:var(--cream); }
+  .sh-grid i{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#ffffff; font-style:normal; font-size:1.1rem; font-weight:900; }
+  .sh-close{ display:block; width:100%; margin-top:12px; font:inherit; font-weight:800; padding:10px; border-radius:12px; border:1px solid var(--border); background:var(--cream); color:var(--ink); cursor:pointer; }
   .ex-links .see-photos:hover{ background:var(--grape); border-color:var(--grape); color:#ffffff; }
   .tp-facts{ gap:0; margin-top:2px; }
   .tp-facts span{ background:none; padding:0; border-radius:0; font-size:.9rem; font-weight:600; color:var(--ink-soft); }
@@ -2052,6 +2066,7 @@
 <symbol id="ic-school" viewBox="0 0 24 24"><path d="M12 3l10 5-10 5L2 8z"/><path d="M6 11.5v4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4"/><path d="M22 8v6"/></symbol>
 <symbol id="ic-tree" viewBox="0 0 24 24"><path d="M12 22v-6"/><path d="M12 16c-4 0-7-2.6-7-6a5 5 0 0 1 3-4.6A4 4 0 0 1 12 2a4 4 0 0 1 4 3.4 5 5 0 0 1 3 4.6c0 3.4-3 6-7 6z"/></symbol>
 <symbol id="ic-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+<symbol id="ic-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></symbol>
 <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.6"/></symbol>
 <symbol id="ic-cake" viewBox="0 0 24 24"><path d="M4 21V13a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8z"/><path d="M4 16c2 1.5 4 1.5 6 0s4-1.5 6 0 2.5 1 4 0M2 21h20M8 11V8M12 11V8M16 11V8"/><path d="M8 5.5a1 1 0 0 0 0 .5M12 4.5a1 1 0 0 0 0 .5M16 5.5a1 1 0 0 0 0 .5"/></symbol>
 <symbol id="ic-tent" viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 3v17M9 20l3-6 3 6"/><path d="M12 3l1.5-1.5"/></symbol>
@@ -2895,6 +2910,7 @@
         <div class="vn-body">
           <span class="ex-type" id="vnType"></span>
           <h3 id="vnName"></h3>
+          <button type="button" class="vn-share" id="vnShare"><svg class="icon" width="15" height="15" aria-hidden="true"><use href="#ic-share"/></svg>Share this place</button>
           <p class="vn-rating" id="vnRating" hidden></p>
           <div class="vn-feats" id="vnFeats"></div>
           <ul class="vn-facts" id="vnFacts"></ul>
@@ -4865,7 +4881,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       '<span class="ex-loc">' + kzEsc(where) + '</span>' +
       (r.about ? '<span class="tp-about">' + kzEsc(r.about) + '</span>' : '') +
       (facts ? '<span class="tp-facts">' + facts + '</span>' : '') +
-      '<span class="ex-links"><button type="button" class="see-photos" data-open-venue="' + kzEsc(r.id) + '">View details</button><a href="' + maps + '" target="_blank" rel="noopener"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-pin"/></svg>Directions</a>' +
+      '<span class="ex-links"><button type="button" class="see-photos" data-open-venue="' + kzEsc(r.id) + '">View details</button><button type="button" class="ep-share" data-share-venue="' + kzEsc(r.id) + '" aria-label="Share ' + kzEsc(r.name) + '"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-share"/></svg>Share</button><a href="' + maps + '" target="_blank" rel="noopener"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-pin"/></svg>Directions</a>' +
       (/^https:\/\//.test(r.web || '') ? '<a href="' + kzEsc(r.web) + '" target="_blank" rel="noopener"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-external"/></svg>Website</a>' : '') +
       '</span></div></article>';
   }
@@ -5280,6 +5296,68 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     REAL.rows = window.PLACES_SNAPSHOT.map(function(r){ return JSON.parse(JSON.stringify(r)); });
     Object.keys(REAL_RENDER).forEach(function(k){ REAL_RENDER[k](); });
   }
+  /* share a venue: the phone's own share menu where there is one, else a small sheet (WhatsApp, Facebook, email, copy link).
+     The link is eazyplay.in/#v=<id>, which opens that venue's page. */
+  function shareVenue(r){
+    var url = 'https://eazyplay.in/#v=' + encodeURIComponent(r.id);
+    var where = [r.area, r.region || r.city].filter(Boolean).join(', ');
+    var text = r.name + (where ? ' in ' + where : '') + ' – found on EazyPlay';
+    if(navigator.share && matchMedia('(hover:none)').matches){
+      navigator.share({title:r.name, text:text, url:url}).catch(function(err){ if(err && err.name !== 'AbortError') shareSheet(r, url, text); });
+      return;
+    }
+    shareSheet(r, url, text);
+  }
+  var shEl = null, shLastFocus = null;
+  function shareSheet(r, url, text){
+    if(!shEl){
+      shEl = document.createElement('div');
+      shEl.className = 'sh-overlay'; shEl.hidden = true;
+      shEl.setAttribute('role', 'dialog'); shEl.setAttribute('aria-modal', 'true'); shEl.setAttribute('aria-labelledby', 'shTitle');
+      shEl.innerHTML = '<div class="sh-sheet"><h4 id="shTitle">Share this place</h4><p id="shName"></p><div class="sh-grid">' +
+        '<a id="shWa" target="_blank" rel="noopener"><i style="background:#25d366">W</i>WhatsApp</a>' +
+        '<a id="shFb" target="_blank" rel="noopener"><i style="background:#1877f2">f</i>Facebook</a>' +
+        '<a id="shMail"><i style="background:#8a4fa0">@</i>Email</a>' +
+        '<button type="button" id="shCopy"><i style="background:#3b2a4a"><svg class="icon" width="18" height="18" aria-hidden="true"><use href="#ic-share"/></svg></i>Copy link</button>' +
+        '</div><button type="button" class="sh-close" id="shClose">Close</button></div>';
+      document.body.appendChild(shEl);
+      shEl.addEventListener('click', function(e){
+        if(e.target === shEl || e.target.closest('#shClose')){ closeShare(); return; }
+        if(e.target.closest('#shCopy')){ copyShareLink(shEl.getAttribute('data-url')); return; }
+        if(e.target.closest('a')) setTimeout(closeShare, 0);
+      });
+      shEl.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ e.stopPropagation(); closeShare(); } });
+    }
+    shEl.setAttribute('data-url', url);
+    document.getElementById('shName').textContent = r.name;
+    document.getElementById('shWa').href = 'https://wa.me/?text=' + encodeURIComponent(text + ': ' + url);
+    document.getElementById('shFb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+    document.getElementById('shMail').href = 'mailto:?subject=' + encodeURIComponent(r.name + ' on EazyPlay') + '&body=' + encodeURIComponent(text + ':\n' + url);
+    shLastFocus = document.activeElement;
+    shEl.hidden = false;
+    document.getElementById('shWa').focus();
+  }
+  function closeShare(){ if(!shEl || shEl.hidden) return; shEl.hidden = true; if(shLastFocus && shLastFocus.focus) shLastFocus.focus(); }
+  function copyShareLink(url){
+    function done(){ showToast('Link copied'); closeShare(); }
+    function fallback(){
+      var ta = document.createElement('textarea'); ta.value = url; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try{ ok = document.execCommand('copy'); }catch(err){}
+      ta.remove();
+      if(ok) done(); else showToast('Copy this link: ' + url);
+    }
+    if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(done, fallback); else fallback();
+  }
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-share-venue]');
+    if(!b) return;
+    e.stopPropagation();
+    var r = REAL.rows.find(function(x){ return x.id === b.getAttribute('data-share-venue'); });
+    if(r) shareVenue(r);
+  }, true);
+  document.getElementById('vnShare').addEventListener('click', function(){ if(vnRow) shareVenue(vnRow); });
+
   /* a venue link (#v=<id>, used by the venue pages on eazyplay.in) opens that venue */
   function openVenueFromHash(){ var m = /^#v=([\w-]+)$/.exec(location.hash); if(!m) return; var r = REAL.rows.find(function(x){ return x.id === m[1]; }); if(r) openVenue(r); }
   openVenueFromHash();
