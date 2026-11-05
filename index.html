@@ -1695,6 +1695,25 @@
   .fx-slide.on{ opacity:1; visibility:visible; }
   .fx-bg{ position:absolute; inset:-60px; background-size:cover; background-position:center; filter:blur(40px) saturate(1.25); opacity:.6; z-index:0; }
   @media (max-width:800px){ .fx-bg{ display:none; } } /* a 40px blur is slow to draw on phones (iPhone scroll stutter) */
+  /* offer strip above the featured carousel */
+  .offer-strip{ display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:4px 10px; margin:0 0 14px; padding:9px 18px; border-radius:999px; background:#fff3bd; color:#3b2a4a; font-size:.93rem; font-weight:500; line-height:1.3; text-align:center; text-decoration:none; transition:background .15s ease; }
+  .offer-strip:hover{ background:#ffeb99; }
+  .offer-strip .icon{ flex:none; color:#e07a3f; }
+  .offer-strip b{ font-weight:800; }
+  .offer-strip u{ font-weight:700; text-decoration-thickness:2px; text-underline-offset:3px; white-space:nowrap; }
+  @media (max-width:600px){ .offer-strip{ border-radius:16px; padding:8px 14px; font-size:.86rem; margin-bottom:12px; } .offer-strip u{ display:none; } .offer-strip{ flex-wrap:nowrap; text-align:left; } }
+  /* phones: keep the account and menu buttons on the logo row so the header is one row shorter */
+  @media (max-width:430px){
+    .nav .nav-top{ column-gap:8px; }
+    .nav .brand{ flex:none; margin-right:0; }
+    .city-wrap{ flex:1 1 0; min-width:0; }
+    .city-pick{ max-width:100%; min-width:0; padding-right:8px; }
+    .city-pick-text{ min-width:0; }
+    .city-pick-text b{ display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .nav .nav-right{ flex:none; margin-left:auto; }
+  }
+  @media (max-width:380px){ .nav .city-chev{ display:none; } .nav .city-pick{ padding-left:4px; padding-right:4px; gap:4px; } .nav .nav-right{ gap:6px; } .nav .nav-icon-btn{ width:36px; height:36px; } }
+  @media (max-width:340px){ .nav .city-pick > .icon:first-child{ display:none; } }
   .fx-slide::before{ content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(90deg, rgba(255,255,255,.94) 0%, rgba(255,255,255,.8) 52%, rgba(255,255,255,.4) 100%); }
   .fx-copy, .fx-poster{ position:relative; z-index:2; min-width:0; }
   .fx-when{ margin:0 0 10px; font-size:.95rem; font-weight:500; color:var(--ink-soft); }
@@ -2171,6 +2190,7 @@
 <!-- ===== FEATURED CAROUSEL ===== -->
 <section class="feature-band" id="featured" aria-label="Featured near you">
   <div class="container">
+    <a class="offer-strip" href="#playareas" id="offerStrip"><svg class="icon" width="18" height="18" aria-hidden="true"><use href="#ic-tag"/></svg><span><b>10% off</b> play area and activity tickets booked on EazyPlay</span><u>See play areas</u></a>
     <div class="fx" id="fx" aria-roledescription="carousel">
       <div class="fx-track" id="fxTrack"></div>
       <button type="button" class="fx-nav fx-prev" id="fxPrev" aria-label="Previous"><svg class="icon" width="18" height="18" aria-hidden="true"><use href="#ic-chevron"/></svg></button>
@@ -5609,7 +5629,8 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     if(!cityMenu.hidden && !e.target.closest('.city-wrap')) toggleCityMenu(false);
   });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !cityMenu.hidden){ toggleCityMenu(false); cityPickBtn.focus(); } });
-  (function(){ var saved = null, savedArea = null; try{ saved = localStorage.getItem('wh_city'); savedArea = localStorage.getItem('wh_area'); }catch(err){} setCity(saved || 'all', true, savedArea || 'all'); })();
+  /* Default to Noida (where the play areas are). A saved choice is kept only if the visitor picked it themselves or it came from their location. */
+  (function(){ var saved = null, savedArea = null, manual = null; try{ saved = localStorage.getItem('wh_city'); savedArea = localStorage.getItem('wh_area'); manual = localStorage.getItem('wh_city_manual'); }catch(err){} if(!manual && (!saved || saved === 'all')){ saved = 'Noida'; savedArea = 'all'; } setCity(saved, true, savedArea || 'all'); })();
   // Location: map the visitor's coordinates to the nearest NCR area.
   var CITY_CENTRES = { Delhi:[28.6139,77.2090], Gurgaon:[28.4595,77.0266], Noida:[28.5355,77.3910], Ghaziabad:[28.6692,77.4538], Faridabad:[28.4089,77.3178] };
   function nearestCity(lat, lng){
