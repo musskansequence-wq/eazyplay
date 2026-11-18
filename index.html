@@ -2554,7 +2554,7 @@
     <div class="sec-head reveal">
       <span class="eyebrow"><span class="dot"></span>Mark the calendar</span>
       <h2 style="margin-top:14px;">Upcoming kids' <span class="w-pink">events</span> &amp; festivals</h2>
-      <p>Melas, carnivals and fairs worth the drive — reserve a free spot or grab a ticket in seconds.</p>
+      <p>Melas, carnivals and fairs worth the drive, all in one place.</p>
     </div>
     <div class="filter-bar reveal">
       <div>
@@ -4619,7 +4619,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       return {text:'I couldn\'t find ' + label + (useCity ? ' in ' + useCity : '') + forWho + ' yet. Try another city or age, or ask me about play areas or birthday parties.'};
     }
     var intro = (moved ? 'Nothing like that in ' + useCity + ' yet, but here ' : 'Here ') + (items.length === 1 ? 'is one pick' : 'are ' + items.length + ' picks') +
-      (where ? ' in ' + where : moved ? ' elsewhere in Delhi-NCR' : '') + forWho + '. Tap one to see the details.';
+      (where ? ' in ' + where : moved ? ' elsewhere in Delhi-NCR' : '') + forWho + (items.length === 1 ? '. Tap it to see the details.' : '. Tap one to see the details.');
     return {text:intro, refs:items.map(function(r){ return r.id; })};
   }
 
