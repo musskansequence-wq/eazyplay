@@ -1555,14 +1555,14 @@
   .kz-typing i{ width:7px; height:7px; border-radius:50%; background:var(--ink-faint); animation:kzDot 1s infinite; }
   .kz-typing i:nth-child(2){ animation-delay:.15s; } .kz-typing i:nth-child(3){ animation-delay:.3s; }
   @keyframes kzDot{ 0%,100%{ opacity:.3; transform:translateY(0); } 50%{ opacity:1; transform:translateY(-3px); } }
-  .kz-cards{ align-self:stretch; display:grid; gap:8px; }
+  .kz-cards{ align-self:stretch; display:grid; grid-template-columns:minmax(0,1fr); gap:8px; }
   .kz-card{ display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--border); border-radius:14px; padding:8px; text-align:left; cursor:pointer; font-family:var(--font-body); color:var(--ink); transition:border-color .15s ease, transform .15s ease; }
   .kz-card:hover{ border-color:var(--grape); transform:translateX(2px); }
   .kz-card img{ width:58px; height:44px; object-fit:cover; border-radius:9px; flex:none; background:var(--cream-2); }
   .kz-card .kz-ci{ min-width:0; flex:1; }
   .kz-card b{ display:block; font-size:.84rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .kz-card small{ display:block; font-size:.72rem; font-weight:700; color:var(--ink-faint); }
-  .kz-card em{ font-style:normal; font-family:var(--font-display); font-weight:800; font-size:.86rem; color:var(--aqua-deep); white-space:nowrap; }
+  .kz-card small{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; font-size:.72rem; font-weight:700; color:var(--ink-faint); }
+  .kz-card em{ font-style:normal; font-family:var(--font-display); font-weight:800; font-size:.8rem; color:var(--aqua-deep); flex:none; max-width:34%; text-align:right; line-height:1.2; }
   .kz-chips{ display:flex; flex-wrap:wrap; gap:6px; padding:0 14px 10px; }
   .kz-chips button{ border:1px solid var(--border); background:#fff; color:var(--ink); font-family:var(--font-body); font-weight:700; font-size:.78rem; padding:6px 11px; border-radius:999px; cursor:pointer; }
   .kz-chips button:hover{ border-color:var(--grape); color:var(--grape); }
@@ -4566,17 +4566,36 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     return shortDate(it.start) + ' – ' + shortDate(it.end) + ' · ' + it.city;
   }
 
-  /* catalog Claude reads, built from the same data the page shows */
+  /* Eazyyy only knows the real venues the page shows (REAL.rows: PLACES_SNAPSHOT or the live db), never the old example listings */
+  var KZ_REAL_KINDS = {play:'Play area', activity:'Activity', party:'Birthday party venue', event:'Kids\u2019 event'};
+  function kzRealRows(){
+    return (typeof REAL !== 'undefined' && REAL.rows ? REAL.rows : []).filter(function(r){ return !r.hidden && r.photo && KZ_REAL_KINDS[r.kind]; });
+  }
+  function kzRealFind(id){ return kzRealRows().find(function(r){ return r.id === id; }) || null; }
+  function kzRealWhere(r){ return [r.place, r.area].filter(Boolean).join(', ') + ((r.place || r.area) ? ', ' : '') + (r.city || r.region || ''); }
+  function kzRealPrice(r){
+    if(r.price) return r.price.replace(/^Entry from /, 'from ');
+    var opts = (r.plans && r.plans.options) || [];
+    var low = opts.reduce(function(m, o){ var v = Math.min(o.wd || Infinity, o.we || Infinity); return v < m ? v : m; }, Infinity);
+    return isFinite(low) ? 'from ' + inr(low) : '';
+  }
+  /* youngest/oldest age a venue states, from its ages, highlights or about text; null when it says nothing */
+  function kzRealAges(r){
+    var t = [r.ages, (r.highlights || []).join(' . '), r.about].filter(Boolean).join(' . ').toLowerCase();
+    var m = t.match(/(\d+(?:\.\d+)?)\s*(months?)?\s*(?:years?\s*)?(?:–|-|to)\s*(\d+)\s*(?:years?|yrs?)\b/) || t.match(/ages?\s*(\d+)\s*(months?)?\s*(?:–|-|to)\s*(\d+)/);
+    if(m) return {min:m[2] ? 0 : Number(m[1]), max:Number(m[3])};
+    m = t.match(/ages?\s*(\d+)\s*(?:\+|and up|and above|or older)/) || t.match(/(\d+)\s*(?:\+|and up)\s*(?:years|yrs)/) || t.match(/kids? (?:from|over|of) (?:about )?(\d+)/);
+    if(m) return {min:Number(m[1]), max:99};
+    return null;
+  }
+  /* catalog Claude reads, built from the same real venues the page shows */
   function kzCatalog(){
-    var L = [];
-    EXPERIENCES.forEach(function(e){ L.push('[[activity:'+e.id+']] '+e.name+' | '+CAT_BY_ID[e.category].label+' | '+e.city+' | ages '+e.ages.join(', ')+' | '+inr(e.price)+' (was '+inr(e.original)+') | '+e.rating+'★'+(e.badge?' | '+e.badge:'')+(e.spotsLeft?' | only '+e.spotsLeft+' spots left today':'')+' | '+(ACTIVITY_INFO[e.category]||{}).about); });
-    if(false) MOVIES.forEach(function(m){ L.push('[[movie:'+m.id+']] '+m.title+' | private birthday movie screening | '+m.venue+', '+m.city+' | '+m.format+' | up to '+m.capacity+' guests | package '+inr(m.price)+' covers '+m.included+' guests, extra guest '+inr(m.extra)+' | shows '+m.showtimes.join(', ')+' | films: '+m.themes.join(', ')+' | includes: '+m.includes.join('; ')+' | best for '+m.ages+' | '+m.rating+'\u2605'); });
-    PLAYAREAS.forEach(function(p){ L.push('[[playarea:'+p.id+']] '+p.name+' | '+(p.indoor?'indoor':'outdoor')+' play area | '+p.area+', '+p.city+' | ages '+p.ages+' | open '+p.hours+' | '+inr(p.price)+' per child per hour | zones: '+p.zones.join(', ')+' | '+p.rating+'\u2605'); });
-    if(!HIDE_PLAYSCHOOLS) SCHOOLS.forEach(function(x){ L.push('[[playschool:'+x.id+']] '+x.name+' | '+x.area+', '+x.city+' | '+x.curriculum+' | ages '+x.ageRange+' | '+x.timing+' | '+x.fee+' | '+x.rating+'★'); });
-    EVENTS.forEach(function(v){ L.push('[[event:'+v.id+']] '+v.title+' | '+v.city+' | '+v.venue+' | '+v.date+' | ages '+v.ages+' | '+(v.price===0?'free':inr(v.price))+' | '+(EVENT_ABOUT[v.id]||'')); });
-    PARTIES.forEach(function(p){ L.push('[[party:'+p.id+']] '+p.name+' | birthday party hall | '+p.area+', '+p.city+' | up to '+p.capacity+' kids | package '+inr(p.price)+' covers '+p.included+' kids, extra kid '+inr(p.extra)+' | '+p.duration+' | food: '+p.food+' | includes: '+p.includes.join('; ')+' | themes: '+p.themes.join(', ')+' | best for '+p.ages+' | '+p.rating+'★'); });
-    if(false) CAMPS.forEach(function(c){ L.push('[[camp:'+c.id+']] '+c.title+' | '+c.type+' | '+c.city+' | '+c.venue+' | '+c.start+' to '+c.end+' | '+c.hours+' | meals: '+c.meals+' | ages '+c.ages+' | '+inr(c.price)+' | '+c.rating+'★'+(c.spotsLeft?' | only '+c.spotsLeft+' seats left':'')+' | '+(CAMP_ABOUT[c.id]||'')); });
-    return L.join('\n');
+    return kzRealRows().map(function(r){
+      return '[[v:' + r.id + ']] ' + r.name + ' | ' + KZ_REAL_KINDS[r.kind] + (r.type ? ' (' + r.type + ')' : '') + ' | ' + kzRealWhere(r) +
+        (r.ages ? ' | ages ' + r.ages : '') + (kzRealPrice(r) ? ' | ' + kzRealPrice(r) : '') + (r.capacity ? ' | capacity ' + r.capacity : '') +
+        (r.stars ? ' | ' + r.stars + '\u2605 (' + (r.reviews || 0) + ' reviews)' : '') + ((r.highlights || []).length ? ' | has: ' + r.highlights.join('; ') : '') +
+        (r.about ? ' | ' + r.about.slice(0, 220) : '');
+    }).join('\n') || '(no venues listed yet)';
   }
   function kzRules(){
     var today = new Date().toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
@@ -4584,7 +4603,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       'How to answer:\n' +
       '- Use ONLY the catalog and policies below. Never invent venues, prices, dates, timings or policies. If something is not listed, say you do not have it yet and suggest the closest match (another city, age or type).\n' +
       '- Keep it short and warm: 1 to 3 sentences, or a short list. Plain text only, no markdown headings or tables. You may use **bold** for a name.\n' +
-      '- When you recommend a listing, put its tag exactly as written in the catalog (for example [[activity:2]]) at the end of that line. Recommend at most 4. The page turns tags into tappable cards, so do not repeat prices already obvious from the card unless asked.\n' +
+      '- When you recommend a listing, put its tag exactly as written in the catalog (for example [[v:noida-play-01]]) at the end of that line. Recommend at most 4. The page turns tags into tappable cards, so do not repeat prices already obvious from the card unless asked.\n' +
       '- Match ages carefully (2-5 is toddlers and preschoolers, 6-12 primary school, 13+ teens). Weekend means the coming Saturday and Sunday.\n' +
       '- To book, tell them to tap the card and press the booking button. Never ask for card details, passwords or OTPs.\n' +
       '- Reply in the language the parent uses (English, Hindi or Hinglish).\n\n' +
@@ -4596,26 +4615,26 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   function kzScroll(){ kzLog.scrollTop = kzLog.scrollHeight; }
   function kzAdd(cls, html){ var d = document.createElement('div'); d.className = 'kz-msg ' + cls; d.innerHTML = html; kzLog.appendChild(d); kzScroll(); return d; }
   function kzFormat(text){
-    return kzEsc(text.replace(/\[\[[a-z]+:\d+\]\]/g, '').replace(/\[\[[^\]]*$/, '').replace(/[ \t]+\n/g, '\n').trim())
+    return kzEsc(text.replace(/\[\[[a-z]+:[\w-]+\]\]/g, '').replace(/\[\[[^\]]*$/, '').replace(/[ \t]+\n/g, '\n').trim())
       .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
   }
   function kzTags(text){
     var seen = {}, out = [];
-    (text.match(/\[\[([a-z]+):(\d+)\]\]/g) || []).forEach(function(t){
-      var m = t.match(/\[\[([a-z]+):(\d+)\]\]/);
-      var key = m[1] + ':' + m[2];
-      if(seen[key] || !kzFind(m[1], m[2])) return;
-      seen[key] = 1; out.push({kind:m[1], id:Number(m[2])});
+    (text.match(/\[\[v:([\w-]+)\]\]/g) || []).forEach(function(t){
+      var id = t.slice(4, -2);
+      if(seen[id] || !kzRealFind(id)) return;
+      seen[id] = 1; out.push(id);
     });
     return out.slice(0, 4);
   }
+  /* refs: real venue ids */
   function kzCards(refs){
-    if(!refs.length) return;
+    var rows = refs.map(kzRealFind).filter(Boolean);
+    if(!rows.length) return;
     var wrap = document.createElement('div');
     wrap.className = 'kz-cards';
-    wrap.innerHTML = refs.map(function(r){
-      var it = kzFind(r.kind, r.id);
-      return '<button type="button" class="kz-card" data-kz="'+r.kind+':'+r.id+'"><img src="'+photoSrc(r.kind, it)+'" alt=""><span class="kz-ci"><b>'+kzEsc(it.name || it.title)+'</b><small>'+kzEsc(kzMeta(r.kind, it))+'</small></span><em>'+kzEsc(kzPrice(r.kind, it))+'</em></button>';
+    wrap.innerHTML = rows.map(function(r){
+      return '<button type="button" class="kz-card" data-kz="'+kzEsc(r.id)+'"><img src="'+kzEsc(cardImg(r))+'" alt=""><span class="kz-ci"><b>'+kzEsc(r.name)+'</b><small>'+kzEsc([r.type, kzRealWhere(r)].filter(Boolean).join(' · '))+'</small></span><em>'+kzEsc(kzRealPrice(r))+'</em></button>';
     }).join('');
     kzLog.appendChild(wrap);
     kzScroll();
@@ -4623,9 +4642,8 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   kzLog.addEventListener('click', function(e){
     var b = e.target.closest('[data-kz]');
     if(!b) return;
-    var p = b.getAttribute('data-kz').split(':');
-    var it = kzFind(p[0], p[1]);
-    if(it) openDetailModal(p[0], it, KZ_KINDS[p[0]].book);
+    var r = kzRealFind(b.getAttribute('data-kz'));
+    if(r) openVenue(r);
   });
 
   /* built-in answers: used when Claude is not available in this view */
@@ -4648,29 +4666,54 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
 
     if(HIDE_PLAYSCHOOLS && /school|preschool|nursery|montessori|daycare/.test(t)) return {text:'Playschool listings are coming soon to EazyPlay. Meanwhile I can help with play areas, birthday parties, events and activities.'};
     if(/movie|film|cinema|screening|camp/.test(t)) return {text:'EazyPlay focuses on play areas, birthday parties, kids\u2019 events and activities right now, so there are no cinema or camp listings. Want a party venue or a play area instead?'};
-    var kind = /movie|film|cinema|screening/.test(t) ? 'movie' : /play ?area|play ?zone|indoor play|ball pool|playground/.test(t) ? 'playarea' : /birthday|party|parties|party hall/.test(t) ? 'party' : /school|preschool|nursery|montessori|daycare/.test(t) ? 'playschool' :
-      /camp/.test(t) ? 'camp' : /event|mela|fair|festival|carnival|diwali|holi|christmas|bazaar/.test(t) ? 'event' : 'activity';
-    var CAT_WORDS = {softplay:/soft ?play|ball pit|toddler/, trampoline:/trampoline|jump/, arcade:/arcade|vr|video game|gaming/, bowling:/bowl/, cricket:/cricket/, escape:/escape|puzzle/, lasertag:/laser/, gokart:/kart|racing/, pettingzoo:/zoo|animal|goat|rabbit/, stem:/stem|robot|coding|science|craft|clay/};
-    var cat = null; Object.keys(CAT_WORDS).forEach(function(k){ if(!cat && CAT_WORDS[k].test(t)) cat = k; });
-    var free = /free/.test(t);
-    var month = (t.match(/jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec/) || [])[0];
-    var items = KZ_KINDS[kind].list.filter(function(it){
-      if(city && it.city !== city) return false;
-      if(kind === 'activity'){ if(cat && it.category !== cat) return false; if(age !== null && it.ages.indexOf(band(age)) === -1) return false; }
-      if(kind === 'playschool' && age !== null && !ageOkRange(it.ageRange)) return false;
-      if((kind === 'event' || kind === 'camp') && age !== null && it.ages !== 'All Ages' && !ageOkRange(it.ages)) return false;
-      if(kind === 'event' && free && it.price !== 0) return false;
-      if(month && (kind === 'event' || kind === 'camp')){
-        var d = new Date((kind === 'event' ? it.date : it.start) + 'T00:00:00');
-        if(d.toLocaleDateString('en', {month:'short'}).toLowerCase() !== month) return false;
-      }
+    /* picks come only from the real venues shown on the page */
+    var kind = /play ?area|play ?zone|indoor play|soft ?play|ball (?:pool|pit)|playground/.test(t) ? 'play' : /birthday|party|parties|party hall/.test(t) ? 'party' :
+      /event|mela|fair|festival|carnival|diwali|holi|christmas|bazaar/.test(t) ? 'event' : null;
+    var TOPICS = [
+      {q:/trampoline|jump/, v:/trampoline|jump/},
+      {q:/soft ?play|ball (?:pit|pool)|toddler|baby/, v:/soft.?play|ball (?:pit|pool)|toddler|baby|indoor play area/},
+      {q:/arcade|\bvr\b|video game|gaming/, v:/arcade|\bvr\b|gaming/},
+      {q:/kart|racing/, v:/kart/},
+      {q:/zoo|animal|goat|rabbit|petting|farm/, v:/petting|animal|farm|rabbit/},
+      {q:/skat/, v:/skat/},
+      {q:/climb|boulder/, v:/climb|boulder/},
+      {q:/bowl/, v:/bowl/},
+      {q:/snow/, v:/snow/},
+      {q:/craft|clay|paint|stem|science|robot|coding|workshop/, v:/craft|clay|paint|stem|science|robot|coding|workshop/}
+    ];
+    var topic = TOPICS.filter(function(x){ return x.q.test(t); })[0] || null;
+    var kidsM = t.match(/(\d{1,3})\s*(?:kids|children|guests|bachch|people)/);
+    var kids = kidsM ? Number(kidsM[1]) : null;
+    var pickedCity = (typeof currentCity !== 'undefined' && currentCity && currentCity !== 'all') ? currentCity : null;
+    var useCity = city || pickedCity;
+    function hay(r){ return [r.name, r.type, r.ages, (r.highlights || []).join(' '), r.about].filter(Boolean).join(' ').toLowerCase(); }
+    function fits(r){
+      if(kind ? r.kind !== kind : (r.kind !== 'play' && r.kind !== 'activity')) return false;
+      if(topic && !topic.v.test(hay(r))) return false;
+      if(age !== null){ var ag = kzRealAges(r); if(ag && (age < ag.min || age > ag.max)) return false; }
+      if(kids !== null && r.kind === 'party'){ var caps = String(r.capacity || '').match(/\d+/g); if(caps && Math.max.apply(null, caps.map(Number)) < kids) return false; }
       return true;
-    }).sort(function(a, b){ return (b.rating || 0) - (a.rating || 0); }).slice(0, 4);
-    var label = {activity:'activities', movie:'movies', playschool:'playschools', event:'events', camp:'camps', party:'party halls', playarea:'play areas'}[kind];
-    if(kind === 'movie') label = 'birthday screenings';
-    if(!items.length) return {text:'I couldn\'t find ' + label + (city ? ' in ' + city : '') + (age !== null ? ' for a ' + age + '-year-old' : '') + ' yet. Try another city or age, or ask me about play areas, parties or events.'};
-    var intro = 'Here ' + (items.length === 1 ? 'is one pick' : 'are ' + items.length + ' picks') + (city ? ' in ' + city : '') + (age !== null ? ' for a ' + age + '-year-old' : '') + '. Tap one to see the details.';
-    return {text:intro, refs:items.map(function(it){ return {kind:kind, id:it.id}; })};
+    }
+    function score(r){ return (r.pinned ? -1000 : 0) + (topic && topic.v.test((r.name + ' ' + r.type).toLowerCase()) ? -500 : 0) + (!kind && age !== null && age <= 5 && r.kind === 'play' ? -200 : 0) + (r.rank || 99); }
+    function pick(c){
+      var seen = {};
+      return kzRealRows().filter(function(r){ return (!c || r.city === c) && fits(r); })
+        .sort(function(a, b){ return score(a) - score(b); })
+        .filter(function(r){ var k = r.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '|' + r.city; if(seen[k]) return false; seen[k] = 1; return true; })
+        .slice(0, 4);
+    }
+    var items = pick(useCity), where = useCity, moved = false;
+    /* nothing in that city yet: show the rest of Delhi-NCR, and say so */
+    if(!items.length && useCity){ items = pick(null); where = null; moved = items.length > 0; }
+    var label = kind === 'play' ? 'play areas' : kind === 'party' ? 'birthday party venues' : kind === 'event' ? 'kids\u2019 events' : 'places';
+    var forWho = (age !== null ? ' for a ' + age + '-year-old' : '') + (kids !== null && kind === 'party' ? ' for ' + kids + ' kids' : '');
+    if(!items.length){
+      if(kind === 'event') return {text:'Kids\u2019 events are coming soon to EazyPlay. Meanwhile I can help you find a play area, an activity or a birthday party venue.'};
+      return {text:'I couldn\'t find ' + label + (useCity ? ' in ' + useCity : '') + forWho + ' yet. Try another city or age, or ask me about play areas or birthday parties.'};
+    }
+    var intro = (moved ? 'Nothing like that in ' + useCity + ' yet, but here ' : 'Here ') + (items.length === 1 ? 'is one pick' : 'are ' + items.length + ' picks') +
+      (where ? ' in ' + where : moved ? ' elsewhere in Delhi-NCR' : '') + forWho + '. Tap one to see the details.';
+    return {text:intro, refs:items.map(function(r){ return r.id; })};
   }
 
   function kzSetBusy(b){
