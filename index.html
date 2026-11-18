@@ -2181,7 +2181,6 @@
   <a href="#activities">Activities</a>
   <a href="#returnGifts">Return Gifts</a>
   <a href="#mascots">Mascots <small>(coming soon)</small></a>
-  <a href="#testimonials">Reviews</a>
   <a href="#" id="mobileWishlistLink">Wishlist <span id="mobileWishlistCount"></span></a>
   <a href="#" id="mobileAuthLink">Log In / Sign Up</a>
   <a href="#partner" data-partner>List your venue</a>
@@ -3463,7 +3462,6 @@
 </div>
 
 <div class="toast-stack" id="toastStack" aria-live="polite"></div>
-<div class="proof-toast" id="proofToast" aria-live="polite"></div>
 
 <!-- PLACES SNAPSHOT START -->
 <script>/* copy of the db "places" collection, built into the page so the site works for visitors with no claude.ai session; the live db replaces it when available */
@@ -3492,96 +3490,27 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   var CAT_BY_ID = {};
   CATEGORIES.forEach(function(c){ CAT_BY_ID[c.id] = c; });
 
-  var EXPERIENCES = [
-    {id:1, name:'CloudBounce Soft Play Kingdom', city:'Gurgaon', category:'softplay', ages:['2-5','6-12'], price:499, original:799, rating:4.8, reviews:312, badge:'Toddler Favourite', venuePreviewUrl:null},
-    {id:2, name:'SkyJump Trampoline Arena', city:'Delhi', category:'trampoline', ages:['6-12','13+'], price:599, original:899, rating:4.7, reviews:540, badge:'Bestseller', venuePreviewUrl:null},
-    {id:3, name:'Pixel Quest Arcade & VR', city:'Ghaziabad', category:'arcade', ages:['6-12','13+'], price:449, original:649, rating:4.6, reviews:278, badge:'New', venuePreviewUrl:null},
-    {id:4, name:'Ocean Ball Pit Arena', city:'Noida', category:'ballpit', ages:['2-5','6-12'], price:399, original:599, rating:4.7, reviews:190, badge:'Toddler Favourite', venuePreviewUrl:null},
-    {id:5, name:'Rainbow Ball Bay', city:'Faridabad', category:'ballpit', ages:['2-5'], price:349, original:499, rating:4.6, reviews:165, badge:null, venuePreviewUrl:null},
-    {id:6, name:'Twister Tube Slides', city:'Delhi', category:'slides', ages:['2-5','6-12'], price:449, original:649, rating:4.8, reviews:402, badge:'Top Rated', spotsLeft:4, venuePreviewUrl:null},
-    {id:7, name:'Mega Drop Slide Zone', city:'Gurgaon', category:'slides', ages:['6-12'], price:499, original:749, rating:4.7, reviews:321, badge:null, venuePreviewUrl:null},
-    {id:8, name:'Tiny Tots Toddler Zone', city:'Gurgaon', category:'toddler', ages:['2-5'], price:349, original:499, rating:4.9, reviews:455, badge:'Bestseller', spotsLeft:2, venuePreviewUrl:null},
-    {id:9, name:'Little Explorers Baby Play', city:'Noida', category:'toddler', ages:['2-5'], price:299, original:449, rating:4.8, reviews:198, badge:'Toddler Favourite', venuePreviewUrl:null},
-    {id:10, name:'Splash Wall Interactive Games', city:'Gurgaon', category:'interactive', ages:['2-5','6-12'], price:449, original:649, rating:4.7, reviews:143, badge:'New', venuePreviewUrl:null},
-    {id:11, name:'Wonder Bounce Trampoline Park', city:'Noida', category:'trampoline', ages:['2-5','6-12','13+'], price:549, original:799, rating:4.6, reviews:267, badge:null, venuePreviewUrl:null},
-    {id:12, name:'Glow Floor Game Zone', city:'Ghaziabad', category:'interactive', ages:['6-12'], price:399, original:599, rating:4.9, reviews:176, badge:'Top Rated', venuePreviewUrl:null}
-  ];
+  var EXPERIENCES = [];
   /* bowling, escape rooms and laser tag are off the site (user request) */
   var HIDDEN_CATS = ['bowling', 'escape', 'lasertag'];
   CATEGORIES = CATEGORIES.filter(function(c){ return HIDDEN_CATS.indexOf(c.id) === -1; });
   EXPERIENCES = EXPERIENCES.filter(function(e){ return HIDDEN_CATS.indexOf(e.category) === -1; });
 
   var FILMS = ['Bunty & Babli\u2019s Jungle Adventure','The Little Dragon\u2019s Song','Rocket Ravi Goes to Space','Panda Panda Circus','Chhota Champions','The Puppet Kingdom'];
-  var MOVIES = [
-    {id:1, title:'Mini-Plex Birthday Screening', city:'Noida', venue:'ReelJoy Mini-Plex, Sector 18', format:'2D', capacity:30, included:15, price:12999, extra:450, showtimes:['10:00 AM','1:00 PM','4:00 PM'], themes:[FILMS[0], FILMS[1], FILMS[2], FILMS[3]], includes:['Birthday message on the big screen before the film','Popcorn and a drink for every guest','Cake cutting in the private lounge','Party host with games before the show'], ages:'3–12 yrs', rating:4.8, reviews:74, badge:'Most Booked'},
-    {id:2, title:'Big Screen Birthday Bash', city:'Gurgaon', venue:'StarBox Cinemas, Ambience Mall', format:'3D', capacity:60, included:30, price:21999, extra:400, showtimes:['10:30 AM','1:30 PM','4:30 PM'], themes:[FILMS[2], FILMS[1], FILMS[4], FILMS[3]], includes:['Full 3D hall to yourselves','3D glasses for every guest','Popcorn combo for every guest','Birthday child\u2019s photo on the screen'], ages:'5–14 yrs', rating:4.7, reviews:91, badge:'3D Screen'},
-    {id:3, title:'Cosy Recliner Screening', city:'Delhi', venue:'Popcorn Palace, Select Citywalk', format:'2D', capacity:24, included:12, price:14999, extra:700, showtimes:['11:00 AM','2:00 PM','5:00 PM'], themes:[FILMS[0], FILMS[3], FILMS[5], FILMS[1]], includes:['Recliner seats with blankets','Mini pizzas, fries and mocktails served at your seat','Birthday message on screen','Cake cutting in the lounge'], ages:'4–12 yrs', rating:4.9, reviews:58, badge:'Recliners'},
-    {id:4, title:'Dhamaka Birthday Screening', city:'Ghaziabad', venue:'CineJoy, Kaushambi', format:'2D', capacity:40, included:20, price:13999, extra:400, showtimes:['10:00 AM','1:00 PM','4:00 PM'], themes:[FILMS[4], FILMS[2], FILMS[0], FILMS[3]], includes:['Private hall for your group','Popcorn and a drink for every guest','Balloon décor at the entrance','Birthday message on screen'], ages:'4–12 yrs', rating:4.6, reviews:47, badge:null},
-    {id:5, title:'Superstar Birthday Premiere', city:'Faridabad', venue:'StarBox Cinemas, Crown Interiorz Mall', format:'3D', capacity:80, included:40, price:25999, extra:350, showtimes:['11:00 AM','2:30 PM'], themes:[FILMS[2], FILMS[4], FILMS[1], FILMS[5]], includes:['Red-carpet entry with a photo wall','Birthday child\u2019s name on the \u201cnow showing\u201d poster','Popcorn combo for every guest','Party host and cake cutting on stage'], ages:'6–14 yrs', rating:4.8, reviews:66, badge:'Red Carpet'},
-    {id:6, title:'Toddler-Friendly Screening', city:'Delhi', venue:'ReelJoy Mini-Plex, Rajouri Garden', format:'2D', capacity:20, included:10, price:8999, extra:500, showtimes:['10:00 AM','12:30 PM'], themes:[FILMS[5], FILMS[0], FILMS[3], FILMS[1]], includes:['Lights dimmed, never fully dark','Lower volume for little ears','Soft-play corner for restless toddlers','Fruit, juice and popcorn for every guest'], ages:'1–5 yrs', rating:4.9, reviews:39, badge:'Toddler Friendly'}
-  ];
+  var MOVIES = [];
 
-  var SCHOOLS = [
-    {id:1, name:'Little Sprouts Montessori', city:'Gurgaon', area:'Sector 56', curriculum:'Montessori', ageRange:'1.5–4 yrs', timing:'Half-day & Full-day', fee:'₹8,000–12,000/mo', rating:4.8, reviews:210, badge:'Top Rated'},
-    {id:2, name:'Rainbow Meadows Preschool', city:'Delhi', area:'Vasant Kunj', curriculum:'Play-based', ageRange:'2–5 yrs', timing:'Full-day', fee:'₹10,000–14,000/mo', rating:4.6, reviews:168, badge:null},
-    {id:3, name:'Little Learners Studio', city:'Gurgaon', area:'DLF Phase 4', curriculum:'EYFS', ageRange:'1.5–5 yrs', timing:'Half-day', fee:'₹9,500–13,000/mo', rating:4.7, reviews:143, badge:'CBSE-Feeder'},
-    {id:4, name:'Tiny Steps Waldorf House', city:'Delhi', area:'Greater Kailash', curriculum:'Waldorf', ageRange:'2.5–6 yrs', timing:'Full-day', fee:'₹12,000–16,000/mo', rating:4.9, reviews:201, badge:'Top Rated'},
-    {id:5, name:'Sunshine Sprouts Preschool', city:'Ghaziabad', area:'Indirapuram', curriculum:'Play-based', ageRange:'2—4 yrs', timing:'Half-day', fee:'₹6,500–9,000/mo', rating:4.5, reviews:119, badge:'Newly Opened'},
-    {id:6, name:'Cambridge Buds Academy', city:'Noida', area:'Sector 137', curriculum:'EYFS', ageRange:'2—5 yrs', timing:'Full-day', fee:'₹11,000–15,000/mo', rating:4.6, reviews:95, badge:null}
-  ];
+  var SCHOOLS = [];
 
-  var EVENTS = [
-    {id:1, title:'Diwali Mela for Kids', city:'Delhi', venue:'Nehru Park Grounds', date:'2026-10-18', price:0, ages:'All Ages', badge:'Free Entry'},
-    {id:2, title:'Story-Telling Carnival', city:'Delhi', venue:'Sunder Nursery Amphitheatre', date:'2026-10-04', price:199, ages:'3–8 yrs', badge:'Bestseller', spotsLeft:6},
-    {id:3, title:'Junior Science Fair', city:'Noida', venue:'India Expo Centre, Greater Noida', date:'2026-10-11', price:349, ages:'6–12 yrs', badge:'New'},
-    {id:4, title:'Holi Splash Fest Jr.', city:'Gurgaon', venue:'Leisure Valley Park', date:'2027-03-08', price:299, ages:'4–12 yrs', badge:null},
-    {id:5, title:'Winter Wonderland Carnival', city:'Faridabad', venue:'Town Park, Sector 12', date:'2026-12-20', price:249, ages:'2–10 yrs', badge:'Top Rated'},
-    {id:6, title:'Kids’ Christmas Bazaar', city:'Noida', venue:'DLF Mall of India Atrium', date:'2026-12-24', price:0, ages:'All Ages', badge:'Free Entry'}
-  ];
+  var EVENTS = [];
 
-  var PLAYAREAS = [
-    {id:1, name:'Jungle Gym Play Area', city:'Gurgaon', area:'Ambience Mall', indoor:true, ages:'1–10 yrs', hours:'11 AM – 9 PM', price:499, zones:['Ball pool','Three-level climbing frame','Wave slides','Toddler corner'], rating:4.8, reviews:210, badge:'Most Popular'},
-    {id:2, name:'Tiny Town Soft Play', city:'Delhi', area:'Rajouri Garden', indoor:true, ages:'1–6 yrs', hours:'10 AM – 8 PM', price:399, zones:['Toddler soft play','Baby ball pit','Sensory wall','Mini kitchen role-play'], rating:4.9, reviews:164, badge:'Toddler Friendly'},
-    {id:3, name:'Bounce Bay Play Zone', city:'Noida', area:'Sector 18', indoor:true, ages:'3–12 yrs', hours:'11 AM – 9 PM', price:549, zones:['Trampoline pit','Ninja course','Giant slide','Foam pit'], rating:4.7, reviews:132, badge:'New'},
-    {id:4, name:'Treetop Adventure Play', city:'Ghaziabad', area:'Indirapuram', indoor:true, ages:'4–12 yrs', hours:'12 PM – 9 PM', price:599, zones:['Rope bridges','Climbing wall','Zip slide','Ball blasters'], rating:4.6, reviews:88, badge:null},
-    {id:5, name:'Rainbow Castle Play Area', city:'Faridabad', area:'Sector 15', indoor:true, ages:'2–10 yrs', hours:'11 AM – 8 PM', price:449, zones:['Castle climbing frame','Ball pool','Spiral slides','Dress-up corner'], rating:4.8, reviews:97, badge:'Parents\u2019 Pick'},
-    {id:6, name:'Sunny Side Outdoor Play', city:'Delhi', area:'Dwarka Sector 10', indoor:false, ages:'2–12 yrs', hours:'8 AM – 7 PM', price:299, zones:['Sandpit','Swings and see-saws','Wooden slides','Tricycle track'], rating:4.6, reviews:71, badge:'Outdoor'}
-  ];
-  /* play areas are real venues only, and only in Noida for now: the example listings above are switched off */
-  PLAYAREAS.length = 0;
-  var PLAY_ABOUT = {
-    1:'A big, bright indoor play area inside the mall, with separate zones so toddlers and older kids never collide.',
-    2:'Built only for little ones: padded floors, low slides and a calm sensory corner for when it all gets too much.',
-    3:'For kids with energy to burn: a trampoline pit, a ninja course and a foam pit to land in.',
-    4:'A treetop-themed climbing world with rope bridges, a climbing wall and ball-blaster battles.',
-    5:'A rainbow castle to climb, slide and hide in, plus a dress-up corner for princes, princesses and dragons.',
-    6:'Shaded outdoor play in the open air, with a sandpit, swings and a tricycle track.'
-  };
+  var PLAYAREAS = [];
+  var PLAY_ABOUT = {};
 
-  var PARTIES = [
-    {id:1, name:'Balloon Bay Party Hall', city:'Gurgaon', area:'Sector 29', capacity:40, included:20, price:18999, extra:650, duration:'3 hours', food:'Mini pizzas, pasta, fries and mocktails', includes:['Themed décor and balloon arch','Party host with games','1 kg cake of your choice','Return gifts for 20 kids'], themes:['Unicorn','Superheroes','Jungle','Space'], ages:'3–10 yrs', rating:4.8, reviews:132, badge:'Most Booked'},
-    {id:2, name:'Little Stars Party Studio', city:'Delhi', area:'Rajouri Garden', capacity:30, included:15, price:14999, extra:600, duration:'3 hours', food:'Chaat counter, sliders and juices', includes:['Themed décor','Magician for 30 minutes','1 kg cake','Photo booth with props'], themes:['Princess','Cars','Dino','Rainbow'], ages:'2–8 yrs', rating:4.7, reviews:98, badge:null},
-    {id:3, name:'Jumpin’ Joy Party Zone', city:'Faridabad', area:'Sector 15', capacity:50, included:25, price:22999, extra:700, duration:'3 hours', food:'Pizza, pasta, popcorn and mocktails', includes:['1 hour of trampoline for every kid','Party host and games','1.5 kg cake','Themed décor'], themes:['Sports','Space','Pixel blocks','Jungle'], ages:'5–12 yrs', rating:4.9, reviews:156, badge:'Top Rated'},
-    {id:4, name:'Skyline Kids Lounge', city:'Ghaziabad', area:'Indirapuram', capacity:35, included:20, price:24999, extra:900, duration:'3 hours', food:'Live pasta counter, mini burgers and shakes', includes:['Rooftop hall with city views','Party host with treasure hunt','1 kg cake','Themed décor'], themes:['Under the sea','Pirates','Mermaid','Circus'], ages:'3–10 yrs', rating:4.8, reviews:87, badge:'Rooftop Hall'},
-    {id:5, name:'Confetti Castle', city:'Delhi', area:'Pitampura', capacity:60, included:30, price:19999, extra:550, duration:'3 hours', food:'Veg biryani, paneer rolls and juices', includes:['Bouncy castle inside the hall','Party host and DJ','1.5 kg cake','Return gifts for 30 kids'], themes:['Castle & knights','Unicorn','Superheroes','Carnival'], ages:'3–12 yrs', rating:4.7, reviews:120, badge:'Biggest Hall'},
-    {id:6, name:'Tiny Tots Party Nook', city:'Noida', area:'Sector 18', capacity:20, included:12, price:9999, extra:500, duration:'3 hours', food:'Toddler-friendly snacks and fresh juices', includes:['Soft-play corner','Bubble show','Half-kg cake','Baby-safe décor'], themes:['Ocean friends','Farm animals','Rainbow','Teddy picnic'], ages:'1–5 yrs', rating:4.9, reviews:64, badge:'Toddler Friendly'}
-  ];
+  var PARTIES = [];
 
-  var CAMPS = [
-    {id:1, title:'Diwali Break Maker Camp', city:'Gurgaon', venue:'Junior Makers STEM Lab, Sector 56', type:'Day Camp', theme:'Robotics & crafts', ages:'7–12 yrs', start:'2026-10-19', end:'2026-10-23', hours:'9:30 AM – 3:30 PM', meals:'Lunch & snacks', price:5499, rating:4.8, reviews:86, badge:'Bestseller', spotsLeft:5},
-    {id:2, title:'Little Chefs Festive Camp', city:'Delhi', venue:'The Kitchen Studio, Hauz Khas', type:'Day Camp', theme:'Baking & festive sweets', ages:'5–10 yrs', start:'2026-10-20', end:'2026-10-24', hours:'10 AM – 1 PM', meals:'Everything they bake', price:4200, rating:4.7, reviews:64, badge:'New'},
-    {id:3, title:'Aravalli Nature Trails Camp', city:'Gurgaon', venue:'Aravalli Biodiversity Park', type:'Nature Camp', theme:'Birding, trails & bugs', ages:'6–12 yrs', start:'2026-12-21', end:'2026-12-26', hours:'8 AM – 1 PM', meals:'Breakfast & fruit', price:6800, rating:4.9, reviews:112, badge:'Top Rated', spotsLeft:3},
-    {id:4, title:'Winter Sports Sampler', city:'Delhi', venue:'Siri Fort Sports Complex', type:'Sports Camp', theme:'Skating, football & swimming', ages:'6–14 yrs', start:'2026-12-22', end:'2027-01-02', hours:'9 AM – 12 PM', meals:'Juice break', price:7500, rating:4.6, reviews:93, badge:null},
-    {id:5, title:'Stage Stars Theatre Camp', city:'Ghaziabad', venue:'Stagecraft Studio, Raj Nagar', type:'Arts Camp', theme:'Drama, dance & a final show', ages:'8–14 yrs', start:'2026-12-26', end:'2027-01-06', hours:'10 AM – 4 PM', meals:'Lunch included', price:8900, rating:4.8, reviews:57, badge:'Parents’ Pick'},
-    {id:6, title:'Summer Adventure Residential', city:'Noida', venue:'Base camp: Rishikesh (bus from Noida)', type:'Residential', theme:'Rafting, rappelling & campfires', ages:'10–15 yrs', start:'2027-05-15', end:'2027-05-20', hours:'5 nights, supervised 24×7', meals:'All meals', price:18500, rating:4.9, reviews:140, badge:'Early Bird −15%', spotsLeft:8}
-  ];
+  var CAMPS = [];
 
-  var TESTIMONIALS = [
-    {name:'Ritika M.', city:'Gurgaon', text:'Booked Turbo Track for my son’s 9th birthday in literally a minute. No calls, no back-and-forth on WhatsApp with the venue. Just worked.', rating:5, color:'g-coral'},
-    {name:'Aman S.', city:'Ghaziabad', text:'The safety badge actually means something — Pixel Quest was spotless and the staff checked wristbands at every door. Finally, someone vetting these places.', rating:5, color:'g-teal'},
-    {name:'Priya K.', city:'Noida', text:'Booked a private screening for my son’s 7th birthday. His name came up on the big screen, 25 kids got popcorn, and I didn’t have to call the cinema once.', rating:5, color:'g-grape'},
-    {name:'Farah I.', city:'Delhi', text:'Shortlisted 3 playschools near Greater Kailash by curriculum and fee range in one evening. Wish I’d found this before running around for admissions.', rating:4, color:'g-yellow'}
-  ];
+  var TESTIMONIALS = [];
 
   /* ---------- STATE ---------- */
   var state = { city:'all', age:'all', category:'all' };
@@ -3730,11 +3659,11 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   var catScroll = document.getElementById('categoryScroll');
   function renderCategories(){
     catScroll.innerHTML = CATEGORIES.map(function(c){
-      var count = EXPERIENCES.filter(function(e){ return e.category === c.id; }).length;
+      var count = typeof CAT_RX === 'undefined' ? 0 : catRealRows(state.city, c.id).length;
       var active = state.category === c.id;
       return '<button type="button" class="cat-card'+(active?' active':'')+'" data-cat="'+c.id+'" role="listitem" aria-pressed="'+active+'">' +
         '<span class="cat-ic cat-photo '+c.g+'"><img src="img/act-'+c.id+'.jpg" alt="" loading="lazy" decoding="async"></span>' +
-        '<b>'+c.label+'</b><span class="cat-count">'+count+(count === 1 ? ' spot' : ' spots')+'</span>' +
+        '<b>'+c.label+'</b><span class="cat-count">'+(count ? count+(count === 1 ? ' spot' : ' spots') : 'Coming soon')+'</span>' +
         '</button>';
     }).join('');
   }
@@ -3953,8 +3882,8 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   /* an activity type card lists the real play areas and activity venues that offer it */
   var CAT_RX = {softplay:/soft ?play|(^|[^-\w])play (area|zone)|indoor play/i, ballpit:/ball ?(pit|pool)/i, trampoline:/trampoline/i, slides:/slide/i,
     toddler:/toddler|soft ?play|baby|\bages? [12]\b|\b[12] ?(–|-|to) ?\d{1,2} ?(years|yrs)/i, interactive:/interactive|projector|vr|digital|laser|game/i, arcade:/arcade|vr|gaming|bowling|game card/i};
-  function catRealRows(city){
-    var rx = CAT_RX[state.category];
+  function catRealRows(city, cat){
+    var rx = CAT_RX[cat || state.category];
     var rows = realRows('activity', city).concat(realRows('play', city));
     if(!rx) return rows;
     /* strongest match first: the venue's type or name, then its highlights and tickets, then its description */
@@ -3971,6 +3900,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   }
   function renderGrid(){
     renderActivePill();
+    renderCategories();
     sectionGrid({kind:'activity', realFilter:state.category !== 'all' ? catRealRows : null, state:state, list:EXPERIENCES, match:matches, card:cardHTML, grid:gridEl, count:resultCountEl, one:'adventure', many:'adventures', realOne:'activity venue', realMany:'activity venues',
       empty:'<div class="empty-state"><b>No adventures match yet</b>Try a different city or age band — or clear a filter above.</div>'});
   }
@@ -4335,44 +4265,16 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     pettingzoo: {about:'Rabbits, goats, ducks and guinea pigs that kids can feed and hold, with a keeper beside them the whole time.', duration:'90 minutes', good:['Feed cup included','Hand-wash stations throughout','Pram friendly']},
     stem:       {about:'Hands-on workshops where kids build, code or sculpt something real and take it home the same day.', duration:'2 hours', good:['All materials included','Take-home project','Small batches of 10 kids']}
   };
-  var MOVIE_ABOUT = {
-    1:'A private 30-seat mini hall that feels like your own cinema. The party starts in the lounge with games, then everyone settles in for the film.',
-    2:'A full-size 3D hall for bigger birthday crowds, with the birthday child\u2019s photo up on the big screen before the film.',
-    3:'Recliners, blankets and food served at your seat. The comfiest way to watch a birthday film with a small group.',
-    4:'A private hall, balloon décor at the entrance and a birthday message on screen, at a friendly price.',
-    5:'The full premiere treatment: red carpet, a photo wall and the birthday child\u2019s name on the \u201cnow showing\u201d poster.',
-    6:'Made for 1 to 5-year-olds: lights never go fully dark, the volume stays low, and there is a soft-play corner for wrigglers.'
-  };
+  var MOVIE_ABOUT = {};
   var SCHOOL_ABOUT = {
     'Montessori':'Child-led learning with hands-on Montessori materials in calm, mixed-age classrooms.',
     'Play-based':'Learning through structured play, stories, music and plenty of outdoor time.',
     'EYFS':'Follows the UK Early Years Foundation Stage, with milestones tracked across seven learning areas.',
     'Waldorf':'Rhythm-based days built around art, nature, storytelling and handwork, with no screens.'
   };
-  var EVENT_ABOUT = {
-    1:'Rangoli corners, diya painting, puppet shows and food stalls, ending with a firecracker-free light show.',
-    2:'Storytellers, puppeteers and picture-book readings running across three stages in the park.',
-    3:'Kid-run experiments, a robotics arena and hands-on labs from local science clubs.',
-    4:'Organic colours, water-play zones and dhol music, with a separate area for little ones.',
-    5:'A snow machine, carousel, Santa’s grotto and a winter market full of kids’ workshops.',
-    6:'Craft stalls, carol singing and a cookie-decorating corner in the mall atrium.'
-  };
-  var PARTY_ABOUT = {
-    1:'A bright private hall with a balloon arch, party host and games, and a menu kids actually finish.',
-    2:'A cosy studio with a magician, a photo booth and a chaat counter the grown-ups will love too.',
-    3:'Party in the hall, then an hour on the trampolines. Great for kids who need to burn energy.',
-    4:'A rooftop lounge with city views, a treasure hunt for the kids and a live pasta counter.',
-    5:'The biggest hall in the city, with a bouncy castle indoors and a DJ for the dance-off.',
-    6:'Made for first and second birthdays: soft-play, a bubble show and baby-safe décor.'
-  };
-  var CAMP_ABOUT = {
-    1:'Five days of building simple robots, circuits and festive crafts, ending with a mini showcase for parents.',
-    2:'Kids bake cookies, cupcakes and easy festive sweets, and take a box home every day.',
-    3:'Guided nature walks, bird counts and bug hunts with a naturalist, plus a nature journal to keep.',
-    4:'Rotating sessions of skating, football and swimming with certified coaches.',
-    5:'Drama games, dance and script work that build up to a final show for families.',
-    6:'Five nights by the Ganga with rafting, rappelling, short treks and campfires, led by trained instructors.'
-  };
+  var EVENT_ABOUT = {};
+  var PARTY_ABOUT = {};
+  var CAMP_ABOUT = {};
   var GRID_RENDER = {activity:function(){ renderGrid(); }, movie:function(){ renderMovieGrid(); }, playschool:function(){ renderSchoolGrid(); }, event:function(){ renderEventGrid(); }, camp:function(){ renderCampGrid(); }, party:function(){ renderPartyGrid(); }, playarea:function(){ renderPlayGrid(); }};
 
   function factsHTML(pairs){
@@ -5299,10 +5201,6 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       return out;
     }
     return out;
-    var inArea = function(it){ return c === 'all' || it.city === c; };
-    PLAYAREAS.filter(inArea).slice(0, 3).forEach(function(it){ out.push({img:photoSrc('playarea', it), when:'Daily, multiple slots', title:it.name, venue:it.area + ', ' + it.city, price:inr(it.price) + ' onwards', cta:'Book tickets', open:function(){ openDetailModal('playarea', it, function(x){ openBookingFormModal('playarea', x); }); }}); });
-    PARTIES.filter(inArea).slice(0, 3).forEach(function(it){ out.push({img:photoSrc('party', it), when:'Birthday party venue \u00b7 Pick your date', title:it.name, venue:it.area + ', ' + it.city, price:inr(it.price) + ' onwards', cta:'Book now', open:function(){ openDetailModal('party', it, function(x){ openBookingFormModal('party', x); }); }}); });
-    return out;
   }
   function fxShow(i){
     if(!fx.items.length) return;
@@ -5487,8 +5385,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   var areaSearch = document.getElementById('areaSearch'), areaListEl = document.getElementById('areaList');
   function cityAreas(c){
     var rows = REAL.rows.filter(function(r){ return r.city === c && r.area; });
-    var src = rows.length ? rows.map(function(r){ return {area:r.area, name:r.name, play:r.kind === 'play', venue:r.kind === 'play' || r.kind === 'party' || r.kind === 'activity'}; })
-      : PLAYAREAS.concat(PARTIES).filter(function(it){ return it.city === c && it.area; }).map(function(it){ return {area:it.area, name:it.name, play:PLAYAREAS.indexOf(it) !== -1, venue:true}; });
+    var src = rows.map(function(r){ return {area:r.area, name:r.name, play:r.kind === 'play', venue:r.kind === 'play' || r.kind === 'party' || r.kind === 'activity'}; });
     var by = {};
     src.forEach(function(s){
       var a = by[s.area] || (by[s.area] = {area:s.area, play:0, venues:0, total:0, names:[]});
@@ -5604,17 +5501,6 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       var seen = {};
       navHits = navHits.filter(function(h){ var key = (h.real.kind === 'party' ? 'p:' : '') + h.real.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '|' + (h.real.city || ''); if(seen[key]) return false; seen[key] = 1; return true; });
       navHits = navHits.slice(0, 6);
-    }else{
-      Object.keys(KZ_KINDS).forEach(function(kind){
-        KZ_KINDS[kind].list.forEach(function(it){
-          if(match(searchText(kind, it))) navHits.push({kind:kind, item:it});
-        });
-      });
-      navHits.sort(function(a, b){
-        var ca = currentCity !== 'all' && a.item.city === currentCity ? 1 : 0, cb = currentCity !== 'all' && b.item.city === currentCity ? 1 : 0;
-        return (cb - ca) || ((b.item.rating || 0) - (a.item.rating || 0));
-      });
-      navHits = navHits.slice(0, 5);
     }
     /* open-map places; skip ones already shown as a real venue */
     var shown = navHits.map(function(h){ return h.real && h.real.id; }), shownNames = navHits.map(function(h){ return h.real ? h.real.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '|' + h.real.city : ''; });
@@ -8472,29 +8358,6 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   updateWeekendCountdown();
   setInterval(updateWeekendCountdown, 60000);
 
-  /* ---------- SOCIAL PROOF TICKER ---------- */
-  var PROOF_FEED = [
-    {name:'Aarav', city:'Delhi', action:'booked', item:'SkyJump Trampoline Arena', mins:2},
-    {name:'Meher', city:'Ghaziabad', action:'booked', item:'Pixel Quest Arcade & VR', mins:4},
-    {name:'Kabir', city:'Gurgaon', action:'booked', item:'Turbo Track Go-Karting', mins:1},
-    {name:'Ananya', city:'Faridabad', action:'reserved', item:'Winter Wonderland Carnival', mins:6},
-    {name:'Vihaan', city:'Noida', action:'booked', item:'a play slot at Bounce Bay Play Zone', mins:3},
-    {name:'Ishita', city:'Noida', action:'booked', item:'a party hall for 25 kids', mins:5},
-    {name:'Reyansh', city:'Delhi', action:'booked', item:'Mystery Manor Escape Rooms', mins:2},
-    {name:'Saanvi', city:'Delhi', action:'booked', item:'Neon Laser Tag Arena', mins:7}
-  ];
-  var proofToastEl = document.getElementById('proofToast');
-  var proofIndex = 0;
-  function showProofToast(){
-    var p = PROOF_FEED[proofIndex % PROOF_FEED.length];
-    proofIndex++;
-    proofToastEl.innerHTML =
-      '<span class="proof-ic g-coral"><svg class="icon" width="16" height="16" style="color:var(--ink);"><use href="#ic-flame"/></svg></span>' +
-      '<span class="proof-text"><b>' + p.name + '</b> from ' + p.city + ' ' + p.action + ' <b>' + p.item + '</b><span>' + p.mins + ' minutes ago</span></span>';
-    proofToastEl.classList.add('show');
-    setTimeout(function(){ proofToastEl.classList.remove('show'); }, 5000);
-  }
-  /* proof toast switched off (no simulated bookings); its timer no longer runs */
 
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){
