@@ -5485,6 +5485,12 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     var words = q.toLowerCase().trim().split(/\s+/).filter(Boolean);
     if(!words.length){ navResults.hidden = true; return; }
     navHits = [];
+    /* "soft play", "play area", "play zone", "playground", "indoor play" and "ball pit/pool" all mean the same kind of place:
+       take the phrase out of the words and match it against indoor play areas (or venues that mention any of these) instead */
+    var PLAYISH = /soft ?play|play ?area|play ?zone|playground|indoor play|ball ?(?:pit|pool)/;
+    var playQ = PLAYISH.test(q.toLowerCase());
+    if(playQ) words = q.toLowerCase().replace(new RegExp(PLAYISH.source, 'g'), ' ').trim().split(/\s+/).filter(Boolean);
+    var playOk = function(text){ return !playQ || PLAYISH.test(String(text).toLowerCase()); };
     var match = function(hay){ hay = hay.toLowerCase(); return words.every(function(w){ return hay.indexOf(w) !== -1; }); };
     var inCity = function(c){ return currentCity === 'all' || c === currentCity; };
     if(REAL.rows && REAL.rows.length){
@@ -5493,11 +5499,11 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       REAL.rows.forEach(function(r){
         if(r.hidden || r.kind === 'movie' || r.kind === 'camp' || !inCity(r.city || r.region)) return;
         var hay = [r.name, r.type, r.place, r.area, r.region, r.city, R_LABEL[r.kind], r.kind === 'party' ? 'birthday party hall' : '', (r.highlights || []).join(' ')].join(' ');
-        if(match(hay)) navHits.push({real:r});
+        if(match(hay) && (r.type === 'Indoor play area' || playOk([r.name, r.type, (r.highlights || []).join(' '), r.about].join(' ')))) navHits.push({real:r});
       });
       var wantParty = /party|birthday|banquet|hall/.test(q.toLowerCase());
       /* venues whose name or type matches the search come first (a trampoline park before a farm that merely has a trampoline) */
-      var strong = function(r){ return match([r.name, r.type, R_LABEL[r.kind]].join(' ')) ? 1 : 0; };
+      var strong = function(r){ return playQ ? (r.type === 'Indoor play area' || PLAYISH.test((r.name + ' ' + r.type).toLowerCase()) ? 1 : 0) : match([r.name, r.type, R_LABEL[r.kind]].join(' ')) ? 1 : 0; };
       navHits.sort(function(a, b){
         var pa = a.real.kind === 'party' ? 1 : 0, pb = b.real.kind === 'party' ? 1 : 0;
         return (strong(b.real) - strong(a.real)) || (wantParty ? pb - pa : pa - pb) || (a.real.rank || 99) - (b.real.rank || 99);
@@ -5511,7 +5517,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     var shown = navHits.map(function(h){ return h.real && h.real.id; }), shownNames = navHits.map(function(h){ return h.real ? h.real.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '|' + h.real.city : ''; });
     var extra = EX_PLACES.filter(function(p){
       if(!inCity(p.a) || (p.rid && shown.indexOf(p.rid) !== -1) || shownNames.indexOf(p.n.toLowerCase().replace(/[^a-z0-9]/g, '') + '|' + p.a) !== -1) return false;
-      return match(p.n + ' ' + p.t + ' ' + p.a + ' ' + p.l);
+      return match(p.n + ' ' + p.t + ' ' + p.a + ' ' + p.l) && playOk(p.n + ' ' + p.t);
     }).slice(0, Math.max(0, 8 - navHits.length));
     extra.forEach(function(p){ navHits.push({ext:p}); });
     navFocus = -1;
