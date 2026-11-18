@@ -5496,7 +5496,12 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
         if(match(hay)) navHits.push({real:r});
       });
       var wantParty = /party|birthday|banquet|hall/.test(q.toLowerCase());
-      navHits.sort(function(a, b){ return wantParty ? (b.real.kind === 'party') - (a.real.kind === 'party') : (a.real.kind === 'party') - (b.real.kind === 'party') || (a.real.rank || 99) - (b.real.rank || 99); });
+      /* venues whose name or type matches the search come first (a trampoline park before a farm that merely has a trampoline) */
+      var strong = function(r){ return match([r.name, r.type, R_LABEL[r.kind]].join(' ')) ? 1 : 0; };
+      navHits.sort(function(a, b){
+        var pa = a.real.kind === 'party' ? 1 : 0, pb = b.real.kind === 'party' ? 1 : 0;
+        return (strong(b.real) - strong(a.real)) || (wantParty ? pb - pa : pa - pb) || (a.real.rank || 99) - (b.real.rank || 99);
+      });
       /* one result per venue: the same place can be listed as both a play area and an activity */
       var seen = {};
       navHits = navHits.filter(function(h){ var key = (h.real.kind === 'party' ? 'p:' : '') + h.real.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '|' + (h.real.city || ''); if(seen[key]) return false; seen[key] = 1; return true; });
