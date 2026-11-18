@@ -3571,8 +3571,8 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     var what = o.soonName || (o.realMany || o.many);
     o.count.textContent = has ? '0 ' + (o.realMany || o.many) + ' found' : 'Coming soon' + (city === 'all' ? '' : ' to ' + city);
     o.grid.innerHTML = has ? o.empty :
-      '<div class="empty-state"><b>' + kzEsc(what.replace(/^./, function(c){ return c.toUpperCase(); })) + (city === 'all' ? '' : ' in ' + kzEsc(city)) + ' are coming soon</b>We only list places we have real photos of.' +
-      (anyHere && city !== 'all' ? '<br><button type="button" class="btn btn-ghost" data-city-go="all" style="margin-top:12px">See all of Delhi-NCR</button>' : '') + '</div>';
+      '<div class="empty-state"><b>' + kzEsc(what.replace(/^./, function(c){ return c.toUpperCase(); })) + (city === 'all' ? '' : ' in ' + kzEsc(city)) + ' are coming soon</b>' +
+      (anyHere && city !== 'all' ? '<button type="button" class="btn btn-ghost" data-city-go="all" style="margin-top:6px">See all of Delhi-NCR</button>' : '') + '</div>';
   }
   var wishlist = new Set();
 
