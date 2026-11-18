@@ -5173,7 +5173,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     var bookable = realBookable(r);
     vnModal.classList.remove('open');
     if(r.plans && r.plans.closed) return;
-    var adv = realAdvance(r), item = {id:r.id, name:r.name, city:r.region || r.city, area:[r.place, r.area, r.region].filter(Boolean).join(', '), price:bookable ? realPrice(r) : 0, advance:adv, request:!bookable && !adv, kind:r.kind};
+    var adv = realAdvance(r), item = {id:r.id, name:r.name, city:r.region || r.city, area:[r.place, r.area, r.region].filter(Boolean).join(', '), price:bookable ? realPrice(r) : 0, advance:adv, request:!bookable && !adv, kind:r.kind, cap:capRange(r.capacity)};
     if(planBook(r)){ item.options = r.plans.options.filter(function(o){ return o.wd > 0 || o.we > 0; }); item.wkend = planWkend(r.plans); item.closedDow = planClosedDow(r.plans); }
     openBookingFormModal('venue', item);
   });
@@ -6199,8 +6199,19 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   function isPkg(){ return live.type === 'party' || live.type === 'movie'; }
   function isGroup(){ return live.type === 'venue' && (live.item.kind === 'party' || live.item.kind === 'movie'); }
   function qtyStep(){ return isPkg() || isGroup() ? 5 : 1; }
-  function qtyMin(){ return isPkg() || isGroup() ? 10 : 1; }
-  function qtyDefault(){ return isPkg() ? Math.min(live.item.included, live.item.capacity) : isGroup() ? 20 : 1; }
+  /* party venues: the guest counter follows the venue's stated capacity ("5–30 kids", "Up to 50 guests", "200+ guests"); 10–150 when it states none */
+  function capRange(c){
+    c = String(c || ''); var m;
+    if((m = c.match(/(\d+)\s*kids?\s*\+\s*(\d+)\s*adults?/i))) return {min:null, max:Number(m[1]) + Number(m[2])};
+    if((m = c.match(/(\d+)\s*[–-]\s*(\d+)/))) return {min:Number(m[1]), max:Number(m[2])};
+    if((m = c.match(/up to\s*(\d+)/i))) return {min:null, max:Number(m[1])};
+    if((m = c.match(/(\d+)\s*\+/))) return {min:Number(m[1]), max:null};
+    return {min:null, max:null};
+  }
+  function groupMax(){ var c = live.item.cap || {}; return c.max || (c.min ? Math.max(150, c.min + 300) : 150); }
+  function groupMin(){ var c = live.item.cap || {}; return Math.min(c.min || 10, groupMax()); }
+  function qtyMin(){ return isPkg() ? 10 : isGroup() ? groupMin() : 1; }
+  function qtyDefault(){ return isPkg() ? Math.min(live.item.included, live.item.capacity) : isGroup() ? Math.max(groupMin(), Math.min(20, groupMax())) : 1; }
   /* kids' bookings also count the grown-ups who come along (free entry, not counted against kid capacity) */
   var ADULT_MAX = 10;
   function hasAdults(){ return !isPkg() && !isGroup() && ['venue', 'playarea', 'activity', 'event'].indexOf(live.type) !== -1; }
@@ -6257,7 +6268,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   function renderLiveQty(){
     liveQtyRow.hidden = !live.slot;
     if(!live.slot){ document.getElementById('liveAdultRow').hidden = true; return; }
-    var max = isPkg() ? live.item.capacity : isGroup() ? 150 : Math.min(live.type === 'playschool' ? 3 : 20, seatsLeft(live.days[live.day].iso, live.slot));
+    var max = isPkg() ? live.item.capacity : isGroup() ? groupMax() : Math.min(live.type === 'playschool' ? 3 : 20, seatsLeft(live.days[live.day].iso, live.slot));
     if(live.qty > max) live.qty = Math.max(qtyMin(), max);
     liveQtyEl.textContent = live.qty;
     document.getElementById('liveMinus').disabled = live.qty <= qtyMin();
