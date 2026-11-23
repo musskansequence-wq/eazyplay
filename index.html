@@ -1828,6 +1828,7 @@
   .xcard-meta, .ex-card .ex-type{ order:-1; text-transform:none; letter-spacing:0; font-size:.8rem; font-weight:500; color:var(--when); }
   .xcard-body h3, .ex-card .ex-main b{ font-family:var(--font-body); font-size:1.02rem; font-weight:600; line-height:1.3; }
   .ex-card .ex-loc{ font-weight:500; font-size:.86rem; color:var(--ink-soft); }
+.ex-offtag{ align-self:flex-start; display:inline-block; margin-top:2px; padding:2px 9px; border-radius:999px; background:#fff3bd; color:#3b2a4a; font-size:.76rem; font-weight:700; }
   .xcard .age-row, .xcard .camp-facts, .xcard .urgency-pill, .xcard-body .btn, .xcard .price-was, .xcard .price-disc{ display:none; }
   .rating-row{ font-weight:500; font-size:.82rem; }
   .price-row{ margin-top:2px; }
@@ -2195,7 +2196,7 @@
 <!-- ===== FEATURED CAROUSEL ===== -->
 <section class="feature-band" id="featured" aria-label="Featured near you">
   <div class="container">
-    <a class="offer-strip" href="#playareas" id="offerStrip"><svg class="icon" width="18" height="18" aria-hidden="true"><use href="#ic-tag"/></svg><span><b>10% off</b> play area and activity tickets booked on EazyPlay</span><u>See play areas</u></a>
+    <a class="offer-strip" href="#playareas" id="offerStrip"><svg class="icon" width="18" height="18" aria-hidden="true"><use href="#ic-tag"/></svg><span><b>10% off</b> at Giggle Garden and Play Town when you book on EazyPlay</span><u>See play areas</u></a>
     <div class="fx" id="fx" aria-roledescription="carousel">
       <div class="fx-track" id="fxTrack"></div>
       <button type="button" class="fx-nav fx-prev" id="fxPrev" aria-label="Previous"><svg class="icon" width="18" height="18" aria-hidden="true"><use href="#ic-chevron"/></svg></button>
@@ -4514,6 +4515,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       '- When you recommend a listing, put its tag exactly as written in the catalog (for example [[v:noida-play-01]]) at the end of that line. Recommend at most 4. The page turns tags into tappable cards, so do not repeat prices already obvious from the card unless asked.\n' +
       '- Match ages carefully (2-5 is toddlers and preschoolers, 6-12 primary school, 13+ teens). Weekend means the coming Saturday and Sunday.\n' +
       '- To book, tell them to tap the card and press the booking button. Never ask for card details, passwords or OTPs.\n' +
+      '- Only Giggle Garden and Play Town are booked and paid on EazyPlay, with 10% off their play tickets. Every other venue shows its own price: the parent taps "Plan my visit" (or "Plan my party"), tells the EazyPlay team their date on WhatsApp, and pays at the venue. Never promise a discount at other venues.\n' +
       '- Reply in the language the parent uses (English, Hindi or Hinglish).\n\n' +
       'Policies: no cash refunds; cancelling at least 24 hours before an activity gets a one-time coupon worth the full amount paid (no coupon within 24 hours); each coupon has its own unique code and expires 1 month after it is issued; and if a venue cancels the parent gets the same coupon or can move date or venue; free rescheduling when rain cancels outdoor plans; every venue passes a 40-point safety and hygiene audit; tickets arrive on WhatsApp and email; EazyPoints: 100 on sign-up and 10 per booking, redeemable on bookings; playschools offer free campus tours on weekdays between 10 AM and 12:15 PM, booked live by tapping the school card (parents can also send an enquiry, and the school calls back within 24 hours); private birthday movie screenings are booked live (pick a date, show time, guest count and film); play areas are booked live by the hour, grip socks required and one grown-up per child enters free; birthday party halls are booked live in 3-hour slots (11 AM, 3 PM or 7 PM), with a theme picked while booking and extra kids charged per head; support: +91 74284 40491 or support@eazyplay.in.\n\n' +
       'Catalog (one listing per line, tag first):\n' + kzCatalog();
@@ -4779,7 +4781,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       '<div class="ex-main"><span class="ex-type">' + kzEsc(p.t) + '</span><b>' + kzEsc(p.n) + '</b>' +
       '<span class="ex-loc">' + kzEsc(p.l ? p.l + ', ' + p.a : p.a) + '</span>' +
       (p.h ? '<span class="ex-hours">Hours: ' + kzEsc(p.h) + '</span>' : '') +
-      '<span class="ex-links"><button type="button" class="ex-book" data-exbook="' + kzEsc(p.o) + '"' + (exBookable(p) || p.rid ? '' : ' hidden') + '>Book now</button>' +
+      '<span class="ex-links"><button type="button" class="ex-book" data-exbook="' + kzEsc(p.o) + '"' + (exBookable(p) || p.rid ? '' : ' hidden') + '>' + (typeof PARTNER_IDS !== 'undefined' && p.rid && PARTNER_IDS.indexOf(p.rid) !== -1 ? 'Book now' : 'Plan my visit') + '</button>' +
       (p.w ? '<a href="' + kzEsc(exUrl(p.w)) + '" target="_blank" rel="noopener"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-external"/></svg>Website</a>' : '') +
       '</span></div></article>';
   }
@@ -4838,6 +4840,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     var o = b.getAttribute('data-exbook');
     var p = EX_PLACES.filter(function(x){ return x.o === o; })[0]; if(!p) return;
     if(p.rid){ var full = REAL.rows && REAL.rows.find(function(x){ return x.id === p.rid; }); if(full){ vnRow = full; document.getElementById('vnBook').click(); return; } }
+    planOpen({id:'ex-' + p.o, name:p.n, area:p.l, city:p.a, kind:'activity'}); return;
     openBookingFormModal('venue', {id:'ex-' + p.o, name:p.n, city:p.a, area:p.l ? p.l + ', ' + p.a : p.a, price:0, advance:ADVANCE.activity, request:false, kind:'activity'});
   });
 
@@ -4871,6 +4874,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       '<span class="ex-ic ' + (TP_TINT[r.kind] || 'g-teal') + '"><svg class="icon" width="18" height="18" aria-hidden="true"><use href="#' + icon + '"/></svg></span></div>' +
       '<div class="ex-main"><span class="ex-type">' + kzEsc(r.type) + '</span><b>' + kzEsc(r.name) + '</b>' +
       '<span class="ex-loc">' + kzEsc(where) + '</span>' +
+      (!r.planOnly && r.plans && r.plans.off ? '<span class="ex-offtag">' + r.plans.off + '% off on EazyPlay</span>' : '') +
       (r.about ? '<span class="tp-about">' + kzEsc(r.about) + '</span>' : '') +
       (facts ? '<span class="tp-facts">' + facts + '</span>' : '') +
       '<span class="ex-links"><button type="button" class="see-photos" data-open-venue="' + kzEsc(r.id) + '">View details</button><button type="button" class="ep-share" data-share-venue="' + kzEsc(r.id) + '" aria-label="Share ' + kzEsc(r.name) + '"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-share"/></svg>Share</button>' + saveBtnHTML(r) + '<a href="' + maps + '" target="_blank" rel="noopener"><svg class="icon" width="13" height="13" aria-hidden="true"><use href="#ic-pin"/></svg>Directions</a>' +
@@ -4989,6 +4993,44 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   var ADVANCE = {play:500, activity:500, party:0, movie:0};
   function realAdvance(r){ return realBookable(r) || (r.plans && r.plans.closed) ? 0 : (ADVANCE[r.kind] || 0); }
   function realBookable(r){ if(r.plans && r.plans.closed) return false; return (r.kind === 'play' || r.kind === 'activity') && (planBook(r) || (realPrice(r) > 0 && /entry|from/i.test(r.price))); }
+  /* EazyPlay PARTNERS: venues that agreed to take EazyPlay bookings (user, 23 Nov 2026). Only these keep "Book now", UPI payment and the 10% off.
+     Every other venue (r.planOnly) shows the venue's own price and a "Plan my visit" button: it opens WhatsApp to the EazyPlay team,
+     the team checks the timing with the venue, and the parent pays at the venue. To add a partner, add its places id here. */
+  var PARTNER_IDS = ['noida-play-19', 'noida-party-41', 'noida-play-55']; /* Giggle Garden play area + party zone, Play Town (Rcube Monad, Sector 43) */
+  function isPartner(r){ return !!r && PARTNER_IDS.indexOf(r.id) !== -1; }
+  /* runs on every venue row as it loads (snapshot and live db); rows are copies, so changing them is safe */
+  function venueTerms(r){
+    if(!r || isPartner(r) || r.kind === 'event') return r;
+    r.planOnly = true;
+    var p = r.plans;
+    if(p && p.off){
+      /* the venue's own price for an EazyPlay price: the matching crossed-out price, else undo the discount */
+      var back = function(v){ var hit = 0; (p.options || []).forEach(function(o){ if(!hit && o.wd === v && o.wdMrp) hit = o.wdMrp; if(!hit && o.we === v && o.weMrp) hit = o.weMrp; }); return hit || Math.round(v / (1 - p.off / 100)); };
+      var num = function(s){ return Number(String(s).replace(/,/g, '')); };
+      var fixTxt = function(s){ return String(s).replace(/On EazyPlay, (.+?) is ₹([\d,]+) \(the venue charges (₹[\d,]+)\)(?: on weekdays and ₹([\d,]+) at weekends)?\./g, function(m, what, ez, ven, wk){
+        return what.charAt(0).toUpperCase() + what.slice(1) + ' is ' + ven + (wk ? ' on weekdays and ' + inr(back(num(wk))) + ' at weekends' : '') + '.'; }); };
+      if(r.price) r.price = r.price.replace(/₹\s?([\d,]+)/, function(m, n){ return inr(back(num(n))); });
+      if(r.about) r.about = fixTxt(r.about);
+      if(Array.isArray(r.highlights)) r.highlights = r.highlights.map(fixTxt);
+      (p.options || []).forEach(function(o){ if(o.wdMrp) o.wd = o.wdMrp; if(o.weMrp) o.we = o.weMrp; delete o.wdMrp; delete o.weMrp; });
+      p.notes = (p.notes || []).map(function(n){ return String(n).replace(/^EazyPlay price:[^.]*\.\s*/, ''); }).filter(Boolean);
+      delete p.off;
+    }
+    return r;
+  }
+  function planLabel(r){ return r.kind === 'party' ? 'Plan my party' : r.kind === 'movie' ? 'Plan a screening' : 'Plan my visit'; }
+  /* WhatsApp message to the EazyPlay team for a venue that isn't a partner yet */
+  function planWaUrl(r){
+    var where = [r.place, r.area, r.region || r.city].filter(Boolean).join(', ');
+    var lines = r.kind === 'party' ? ['Hi EazyPlay! I want to plan a birthday party at ' + r.name + (where ? ' (' + where + ')' : '') + '.', '', 'Party date:', 'Number of kids:', 'Birthday child’s age:', 'Budget (optional):']
+      : r.kind === 'movie' ? ['Hi EazyPlay! I want to plan a private birthday screening at ' + r.name + (where ? ' (' + where + ')' : '') + '.', '', 'Date:', 'Number of guests:', 'Movie (if decided):']
+      : ['Hi EazyPlay! I want to visit ' + r.name + (where ? ' (' + where + ')' : '') + '.', '', 'Date:', 'Time:', 'Kids and their ages:', 'Grown-ups:'];
+    return 'https://wa.me/' + PARTNER_WHATSAPP + '?text=' + encodeURIComponent(lines.join('\n'));
+  }
+  function planOpen(r){
+    try{ if(typeof gtag === 'function') gtag('event', 'plan_visit', {venue_id:r.id || '', venue_name:r.name || '', venue_kind:r.kind || ''}); }catch(e){}
+    window.open(planWaUrl(r), '_blank', 'noopener');
+  }
   var INDOOR_TYPES = ['Indoor play area', 'Trampoline park', 'Arcade & games', 'Bowling', 'Escape room', 'Ice skating', 'Snow park', 'Laser tag', 'VR & gaming'];
   var vnModal = document.getElementById('venueModal'), vnRow = null, vnLastFocus = null, vnShots = [], vnShotIdx = 0;
   var VN_IC = {pin:'ic-pin', clock:'ic-calendar', kid:'ic-softplay', tag:'ic-tag', group:'ic-star'};
@@ -5065,7 +5107,8 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
       var lab = planLabels(pl), wkToday = isWkendIso(isoDay(new Date()), pl);
       var split = (pl.options || []).some(function(o){ return o.wd !== o.we; }), isParty = r.kind === 'party';
       var ph = '<div class="vn-plans-head"><h4>' + (isParty ? 'Party prices' : 'Prices') + ((pl.hours || []).length ? ' &amp; timings' : '') + (pl.off && !pl.closed ? '<span class="vn-off">' + pl.off + '% off on EazyPlay</span>' : '') + '</h4>' + (pl.closed ? '<span class="vn-closed">Temporarily closed</span>' : split ? '<span class="vn-today">Today: ' + (wkToday ? 'weekend' : 'weekday') + ' prices</span>' : '') + '</div>';
-      if(pl.quote && !pl.closed) ph += '<p class="vn-quote">' + kzEsc(r.name) + ' shares party packages on request. ' + (realAdvance(r) ? 'Book with the ' + inr(realAdvance(r)) + ' advance to hold your date: the venue confirms the package and final price, and the advance comes off it.' : 'Send a free party request for your date: the venue confirms the package and final price.') + '</p>';
+      if(pl.quote && !pl.closed && r.planOnly) ph += '<p class="vn-quote">' + kzEsc(r.name) + ' shares party packages on request. Tap ' + planLabel(r) + ' and we’ll get the packages and prices for your date on WhatsApp.</p>';
+      else if(pl.quote && !pl.closed) ph += '<p class="vn-quote">' + kzEsc(r.name) + ' shares party packages on request. ' + (realAdvance(r) ? 'Book with the ' + inr(realAdvance(r)) + ' advance to hold your date: the venue confirms the package and final price, and the advance comes off it.' : 'Send a free party request for your date: the venue confirms the package and final price.') + '</p>';
       if((pl.hours || []).length) ph += '<ul class="vn-hours">' + pl.hours.map(function(h){ return '<li><b>' + kzEsc(h.days) + '</b><span' + (/closed/i.test(h.time) ? ' class="shut"' : '') + '>' + kzEsc(h.time) + '</span></li>'; }).join('') + '</ul>';
       if((pl.options || []).length){
         /* mrp: the venue's own price, struck through when EazyPlay's price is lower */
@@ -5112,6 +5155,9 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     if(r.__noBook){ price.textContent = r.type === 'Playground' ? 'Free to visit' : 'Tickets at the venue'; sub.textContent = r.type === 'Swimming pool' ? 'Members and guests' : 'No booking needed'; payNote = r.type === 'Playground' ? 'It\u2019s a public park, so it\u2019s free.' : 'You pay at the venue, if there is an entry fee.'; }
     else if(r.kind === 'event'){ price.textContent = r.price || 'See listing'; sub.textContent = r.when || ''; btn.textContent = 'Get tickets'; payNote = 'Tickets are sold on the organiser\u2019s page. Tap Get tickets to go there.'; }
     else if(r.plans && r.plans.closed){ price.textContent = 'Temporarily closed'; sub.textContent = 'Not taking bookings right now'; btn.textContent = 'Closed'; payNote = 'This venue is listed as temporarily closed, so it isn\u2019t taking bookings right now.'; }
+    else if(r.planOnly){ var plo = planOk(r) ? planMin(r.plans) : 0;
+      price.textContent = r.price || (plo ? 'From ' + inr(plo) : 'Price on request'); sub.textContent = 'You pay at the venue'; btn.textContent = planLabel(r);
+      payNote = (r.price ? kzEsc(r.price) + ' (the venue’s own price' + (planOk(r) ? '; see the Prices tab for every option' : '') + '). ' : plo ? 'Prices start at ' + inr(plo) + ' (the venue’s own price; see the Prices tab). ' : '') + 'You pay the venue directly when you get there.'; }
     else if(planBook(r)){ var pwd = planMin(r.plans, 'wd'), pwe = planMin(r.plans, 'we'); price.textContent = 'From ' + inr(realPrice(r)); sub.textContent = 'per child \u00b7 weekday & weekend prices'; btn.textContent = 'Book now';
       payNote = (pwd ? 'Weekday tickets start at ' + inr(pwd) : '') + (pwd && pwe ? ' and weekend tickets at ' + inr(pwe) : pwe ? 'Weekend tickets start at ' + inr(pwe) : '') + ' per child. Pick your ticket when you book; you pay by UPI. See the Prices & timings tab for every option.'; }
     else if(realBookable(r)){ price.textContent = inr(realPrice(r)) + ' onwards'; sub.textContent = 'per ticket'; btn.textContent = 'Book now'; payNote = 'Tickets start at ' + inr(realPrice(r)) + ' per child. You pay the full amount by UPI when you book.'; }
@@ -5124,14 +5170,16 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     pb.hidden = !twin; vnRow.__twin = twin;
     /* FAQs from what we know, plus how EazyPlay bookings work */
     var faqs = r.__noBook ? [['Do I need to book?', 'No. You don\u2019t book this place through EazyPlay; just go, after checking its opening days.'], ['How much does it cost?', payNote]] :
+      r.planOnly ? [['How do I plan a visit?', 'Tap ' + planLabel(r) + '. It opens WhatsApp with a message to the EazyPlay team: add your date, time and how many kids are coming. We check the timing with ' + kzEsc(r.name) + ' and get back to you, and you pay at the venue.'], ['How much does it cost?', payNote]] :
       [['How do I book?', 'Tap Book now, pick a date and time, choose how many kids (and grown-ups) are coming, add your details and pay by UPI.'],
       ['How much does it cost?', payNote]];
     var hrs = r.hours || (r.plans && (r.plans.hours || []).length ? r.plans.hours.map(function(h){ return h.days + ': ' + h.time; }).join('; ') : '');
     if(hrs) faqs.push(['What are the timings?', kzEsc(hrs) + '. Timings can change on public holidays, so check with the venue before you go.']);
     if(r.ages) faqs.push(['Which ages is it for?', r.ages + '.']);
-    if((r.kind === 'play' || r.kind === 'activity') && !r.__noBook) faqs.push(['Do grown-ups need a ticket?', 'At least one grown-up stays with the kids. When you book, add how many adults are coming; their entry is free on EazyPlay.']);
-    if(twin) faqs.push(['Can we have a birthday party here?', 'Yes. Tap Plan a birthday to book the party space at ' + kzEsc(twin.name) + '.']);
-    if(!r.__noBook) faqs.push(['Can I cancel?', 'Cancel at least 24 hours before and you get a coupon worth what you paid, valid for 1 month. See the <button type="button" class="info-link" data-info="refunds">Refund Policy</button>.']);
+    if((r.kind === 'play' || r.kind === 'activity') && !r.__noBook && !r.planOnly) faqs.push(['Do grown-ups need a ticket?', 'At least one grown-up stays with the kids. When you book, add how many adults are coming; their entry is free on EazyPlay.']);
+    if(twin) faqs.push(['Can we have a birthday party here?', 'Yes. Tap Plan a birthday to ' + (twin.planOnly ? 'plan it with us on WhatsApp' : 'book the party space at ' + kzEsc(twin.name)) + '.']);
+    if(r.planOnly) faqs.push(['Can I cancel?', 'You pay ' + kzEsc(r.name) + ' directly, so its own rules apply. If your plans change, just tell us on WhatsApp.']);
+    else if(!r.__noBook) faqs.push(['Can I cancel?', 'Cancel at least 24 hours before and you get a coupon worth what you paid, valid for 1 month. See the <button type="button" class="info-link" data-info="refunds">Refund Policy</button>.']);
     if(r.address || where) faqs.push(['Where is it?', kzEsc(r.address || where) + (r.parking ? '. ' + kzEsc(r.parking) + '.' : '.')]);
     document.getElementById('vnPanelFaq').innerHTML = '<div class="vn-faq">' + faqs.map(function(f, i){ return '<details' + (i ? '' : ' open') + '><summary>' + f[0] + '</summary><p>' + f[1] + '</p></details>'; }).join('') + '</div>';
     vnTab('About');
@@ -5168,6 +5216,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   });
   document.getElementById('vnParty').addEventListener('click', function(){
     var t = vnRow && vnRow.__twin; if(!t) return;
+    if(t.planOnly){ planOpen(t); return; }
     vnModal.classList.remove('open');
     openBookingFormModal('venue', {id:t.id, name:t.name, city:t.region || t.city, area:[t.place, t.area, t.region].filter(Boolean).join(', '), price:0, advance:realAdvance(t), request:!realAdvance(t), kind:'party'});
   });
@@ -5175,6 +5224,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   document.getElementById('vnBook').addEventListener('click', function(){
     var r = vnRow; if(!r) return;
     if(r.kind === 'event'){ if(/^https:\/\//.test(r.src || '')) window.open(r.src, '_blank', 'noopener'); return; }
+    if(r.planOnly){ if(!(r.plans && r.plans.closed)) planOpen(r); return; }
     var bookable = realBookable(r);
     vnModal.classList.remove('open');
     if(r.plans && r.plans.closed) return;
@@ -5207,7 +5257,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     if(real.length){
       ['play', 'party', 'activity'].forEach(function(k){
         real.filter(function(r){ return r.kind === k; }).slice(0, 3).forEach(function(r){
-          var bookable = realBookable(r);
+          var bookable = realBookable(r) && !r.planOnly;
           out.push({img:cardImg(r), when:k === 'party' ? 'Birthday party venue \u00b7 Pick your date' : 'Daily, multiple slots',
             title:r.name, venue:[r.place, r.area, r.region].filter(Boolean).join(', '),
             price:bookable ? inr(realPrice(r)) + ' onwards' : (r.price || 'Price on request'), cta:bookable ? 'Book tickets' : 'View venue',
@@ -5282,7 +5332,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   /* venues built into the page (PLACES_SNAPSHOT), so visitors without a claude.ai session or on another host see them;
      the live db below replaces them when it is available */
   if(window.PLACES_SNAPSHOT && !REAL.rows.length){
-    REAL.rows = window.PLACES_SNAPSHOT.map(function(r){ return JSON.parse(JSON.stringify(r)); });
+    REAL.rows = window.PLACES_SNAPSHOT.map(function(r){ return venueTerms(JSON.parse(JSON.stringify(r))); });
     Object.keys(REAL_RENDER).forEach(function(k){ REAL_RENDER[k](); });
   }
   /* share a venue: the phone's own share menu where there is one, else a small sheet (WhatsApp, Facebook, email, copy link).
@@ -5391,7 +5441,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
     DB = db;
     db.collection('places').onSnapshot(function(snap){
       /* the database hands out frozen objects; copy them so the page can annotate rows (e.g. vnRow.__twin) */
-      REAL.rows = snap.docs.map(function(d){ return JSON.parse(JSON.stringify(d.data())); });
+      REAL.rows = snap.docs.map(function(d){ return venueTerms(JSON.parse(JSON.stringify(d.data()))); });
       Object.keys(REAL_RENDER).forEach(function(k){ REAL_RENDER[k](); });
       if(availModal.classList.contains('open')) renderAvailList();
     }, function(){});
