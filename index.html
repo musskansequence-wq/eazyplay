@@ -16,8 +16,8 @@
   gtag('config', 'G-SX14QGTRP9');
 })();
 </script>
-<title>EazyPlay – Kids’ Play Areas, Activities &amp; Parties | Delhi-NCR</title>
-<meta name="description" content="Find and book kids’ play areas, activities and birthday party venues in Noida, Gurgaon and Delhi. Photos, prices and timings, booked online in a minute.">
+<title>EazyPlay – Kids’ Play Areas, Activities &amp; Parties in Noida &amp; Gurgaon</title>
+<meta name="description" content="Find and book kids’ play areas, activities and birthday party venues in Noida and Gurgaon. Photos, prices and timings, booked online in a minute.">
 <link rel="canonical" href="https://eazyplay.in/">
 <meta name="theme-color" content="#faf9f6">
 <meta property="og:type" content="website">
@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_IN">
 <meta property="og:url" content="https://eazyplay.in/">
 <meta property="og:title" content="EazyPlay – Kids’ play, activities &amp; birthday parties">
-<meta property="og:description" content="Find and book the best kids’ places in Noida &amp; Delhi-NCR: play areas, activities and party venues, with photos and prices.">
+<meta property="og:description" content="Find and book the best kids’ places in Noida &amp; Gurgaon: play areas, activities and party venues, with photos and prices.">
 <meta property="og:image" content="https://musskansequence-wq.github.io/eazyplay/img/og-cover.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -1689,6 +1689,7 @@
     .top-tabs::-webkit-scrollbar{ display:none; }
     .city-wrap{ border-left:none; padding-left:0; }
   }
+  @media (max-width:600px){ .nav-tuck .nav .top-tabs{ display:none; } } /* phone header was ~21% of the screen; tabs hide while scrolling down */
 
   /* featured carousel */
   .feature-band{ padding:calc(var(--nav-h, 124px) + 22px) 0 0; }
@@ -4705,8 +4706,12 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   document.getElementById('kzNudgeClose').addEventListener('click', function(){ kzNudge.hidden = true; try{ sessionStorage.setItem('kz_seen', '1'); }catch(err){} });
   kzNudge.addEventListener('click', function(e){ if(!e.target.closest('button')) kzOpen(); });
   var kzSeen = false; try{ kzSeen = sessionStorage.getItem('kz_seen') === '1'; }catch(err){}
-  if(!kzSeen) setTimeout(function(){ if(kzPanel.hidden && !document.getElementById('mobilePanel').classList.contains('open')){ kzNudge.hidden = false; setTimeout(function(){ kzNudge.hidden = true; }, 9000); } }, 6000);
+  if(!kzSeen) setTimeout(function(){ if(kzPanel.hidden && !document.getElementById('mobilePanel').classList.contains('open')){ kzNudge.hidden = false; try{ sessionStorage.setItem('kz_seen', '1'); }catch(err){} var y0 = window.scrollY; var hideOnScroll = function(){ if(Math.abs(window.scrollY - y0) > 40){ kzNudge.hidden = true; window.removeEventListener('scroll', hideOnScroll); } }; window.addEventListener('scroll', hideOnScroll, {passive:true}); setTimeout(function(){ kzNudge.hidden = true; window.removeEventListener('scroll', hideOnScroll); }, window.innerWidth <= 600 ? 5000 : 8000); } }, 6000); /* on phones it sat over the Book button, so it goes on scroll */
   window.addEventListener('scroll', function(){ document.documentElement.classList.toggle('fab-compact', window.scrollY > 600); }, {passive:true});
+  (function(){ var mq = window.matchMedia('(max-width:600px)'), lastY = window.scrollY, tucked = false, root = document.documentElement;
+    window.addEventListener('scroll', function(){ var y = window.scrollY, t = tucked;
+      if(!mq.matches || y < 200) t = false; else if(y > lastY + 8) t = true; else if(y < lastY - 8) t = false; else return;
+      lastY = y; if(t !== tucked){ tucked = t; root.classList.toggle('nav-tuck', t); } }, {passive:true}); })();
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && !kzPanel.hidden && !document.querySelector('.modal-overlay.open')) kzClose();
   }, true);
@@ -4979,7 +4984,7 @@ window.PLACES_SNAPSHOT = [{"about":"BoulderBox in Vasant Kunj (Delhi) is an indo
   }
   function planClosedDow(p){ var c = []; ((p && p.hours) || []).forEach(function(h){ if(/closed/i.test(h.time)) c = c.concat(planDayRange(h.days)); }); return c; }
   function planLabels(p){ return planWkend(p).indexOf(5) !== -1 ? ['Mon\u2013Thu', 'Fri\u2013Sun'] : ['Mon\u2013Fri', 'Sat\u2013Sun']; }
-  function realPrice(r){ if(planBook(r)) return planMin(r.plans); var m = /\u20b9\s?([\d,]+)/.exec(r.price || ''); return m ? Number(m[1].replace(/,/g, '')) : 0; }
+  function realPrice(r){ var m = /\u20b9\s?([\d,]+)/.exec(r.price || ''); if(m && /entry|from/i.test(r.price)) return Number(m[1].replace(/,/g, '')); /* the listed entry price, not a cheaper add-on like a tattoo */ if(planBook(r)) return planMin(r.plans); return m ? Number(m[1].replace(/,/g, '')) : 0; }
   /* advance to hold a slot at venues that have no price on the site; the venue confirms the final price and the advance comes off it */
   var ADVANCE = {play:500, activity:500, party:0, movie:0};
   function realAdvance(r){ return realBookable(r) || (r.plans && r.plans.closed) ? 0 : (ADVANCE[r.kind] || 0); }
